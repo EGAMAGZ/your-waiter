@@ -1,10 +1,12 @@
 ---
-import AuthLayout from "@/layouts/AuthLayout.astro";
+import ProfileLayout from "@/layouts/ProfileLayout.astro";
+
+const { locals } = Astro;
 ---
 
-<AuthLayout title="Your Waiter">
-    <h1>Bienvenido</h1>
+<ProfileLayout title="Your Waiter">
+    <h1>{locals.welcomeTitle()}</h1>
     <form action="/api/auth/sign-out">
         <button type="submit">Cerrar sesión</button>
     </form>
-</AuthLayout>
+</ProfileLayout>

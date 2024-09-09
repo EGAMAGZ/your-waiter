@@ -71,6 +71,11 @@ async function authenticate(context: APIContext, next: MiddlewareNext) {
 }
 
 async function profile(context: APIContext, next: MiddlewareNext) {
+    context.locals.user = {
+        role: "cocina"
+    }
+
+    context.locals.welcomeTitle = () => `Bienvenido ${context.locals.user.role}`
 
     return await next();
 }
