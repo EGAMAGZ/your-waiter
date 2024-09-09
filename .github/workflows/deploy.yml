@@ -15,7 +15,7 @@ jobs:
 
       # ¿No usas npm? Cambia `npm ci` por `yarn install` o `pnpm i`.
       - name: Instalar las dependencias
-        run: npm ci
+        run: npm install --force
 
       # ¿No usas npm? Cambia `npm run build` por `yarn build` o `pnpm run build`.
       - name: Construir Astro
