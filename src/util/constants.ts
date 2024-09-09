@@ -6,4 +6,4 @@ export const SIGN_IN_URL = "/sign-in";
 
 export const HOME_URL = "/";
 
-export const PUBLIC_URLS = [HOME_URL, SIGN_IN_URL, "/api/auth/sign-in", "/api/auth/sign-out"];
+export const PUBLIC_URLS = [SIGN_IN_URL, "/api/auth/sign-in", "/api/auth/sign-out"];
