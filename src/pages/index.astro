@@ -1,6 +1,10 @@
 ---
-import BaseLayout from "@/layouts/BaseLayout.astro"
+import AuthLayout from "@/layouts/AuthLayout.astro";
 ---
 
-<BaseLayout>
-</BaseLayout>
+<AuthLayout title="Your Waiter">
+    <h1>Bienvenido</h1>
+    <form action="/api/auth/sign-out">
+        <button type="submit">Cerrar sesión</button>
+    </form>
+</AuthLayout>

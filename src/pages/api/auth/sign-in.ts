@@ -1,6 +1,6 @@
 import type { APIRoute } from "astro";
 import { supabase } from "@/lib/supabase";
-import { ACCESS_TOKEN_NAME, REFRESH_TOKEN_NAME } from "@/util/constants";
+import { ACCESS_TOKEN_NAME, HOME_URL, REFRESH_TOKEN_NAME } from "@/util/constants";
 
 export const POST: APIRoute = async ({ request, cookies, redirect }) => {
   const formData = await request.formData();
@@ -28,5 +28,5 @@ export const POST: APIRoute = async ({ request, cookies, redirect }) => {
     path: "/",
   });
 
-  return redirect("/dashboard");
+  return redirect(HOME_URL);
 };

@@ -1,9 +1,16 @@
 ---
 interface Props {
     title?: string;
+    noAppendTitle?: boolean;
 }
 
-const { title = "Your Waiter" } = Astro.props;
+const DEFAULT_TITLE = "Your Waiter";
+
+let { title = DEFAULT_TITLE, noAppendTitle } = Astro.props;
+
+if (!title.endsWith("| Your Waiter") && !noAppendTitle) {
+    title = `${title} | Your Waiter`;
+}
 ---
 
 <html lang="es" data-theme="corporate">

@@ -1,8 +1,22 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
+import {
+    ACCESS_TOKEN_NAME,
+    REFRESH_TOKEN_NAME,
+    HOME_URL,
+} from "@/util/constants";
+
+const { cookies, redirect } = Astro;
+
+const accessToken = cookies.get(ACCESS_TOKEN_NAME);
+const refreshToken = cookies.get(REFRESH_TOKEN_NAME);
+
+if (accessToken && refreshToken) {
+    return redirect(HOME_URL);
+}
 ---
 
-<BaseLayout>
+<BaseLayout title="Inicio de sesión">
     <h1>Iniciar sesión</h1>
     <form action="/api/auth/sign-in" method="POST">
         <label for="email">Correo</label>
