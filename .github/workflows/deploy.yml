@@ -24,6 +24,6 @@ jobs:
       - name: Subir a Deno Deploy
         uses: denoland/deployctl@v1
         with:
-          project: my-deno-project # TODO: sustituir por el nombre del proyecto Deno Deploy
+          project: your-waiter # TODO: sustituir por el nombre del proyecto Deno Deploy
           entrypoint: server/entry.mjs
           root: dist
