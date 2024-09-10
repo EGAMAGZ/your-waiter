@@ -1,42 +1,29 @@
 name: Deploy
-on:
-  push:
-    branches: master
-  pull_request:
-    branches: master
+on: [push]
 
 jobs:
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
-
     permissions:
-      id-token: write # Needed for auth with Deno Deploy
-      contents: read # Needed to clone the repository
+      id-token: write # Necesario para la autentificación con Deno Deploy
+      contents: read # Necesario para clonar el repositorio
 
     steps:
-      - name: Clone repository
+      - name: Clonar el repositorio
         uses: actions/checkout@v4
 
-      - name: Install Deno
-        uses: denoland/setup-deno@v1
-        with:
-          deno-version: v1.x
+      # ¿No usas npm? Cambia `npm ci` por `yarn install` o `pnpm i`.
+      - name: Instalar las dependencias
+        run: npm install --force
 
-      - name: Install Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: lts/*
+      # ¿No usas npm? Cambia `npm run build` por `yarn build` o `pnpm run build`.
+      - name: Construir Astro
+        run: npm run build
 
-      - name: Install step
-        run: "npm install"
-
-      - name: Build step
-        run: "npm run build"
-
-      - name: Upload to Deno Deploy
+      - name: Subir a Deno Deploy
         uses: denoland/deployctl@v1
         with:
-          project: "gamalielgar-your-waiter-67"
-          entrypoint: "server/entry.mjs"
-          root: "dist"
+          project: your-waiter
+          entrypoint: server/entry.mjs
+          root: dist
