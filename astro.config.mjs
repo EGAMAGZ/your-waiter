@@ -1,6 +1,7 @@
 import { defineConfig } from 'astro/config';
 
-import tailwind from '@astrojs/tailwind';
+import deno from "@astrojs/deno"
+import tailwind from "@astrojs/tailwind";
 
 // https://astro.build/config
 export default defineConfig({
@@ -8,5 +9,6 @@ export default defineConfig({
   devToolbar: {
     enabled: false,
   },
-  output: 'server'
+  output: 'server',
+  adapter: deno()
 });
