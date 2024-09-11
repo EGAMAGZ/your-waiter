@@ -33,6 +33,11 @@ export const POST: APIRoute = async ({ request, cookies, redirect }) => {
   cookies.set(REFRESH_TOKEN_NAME, refresh_token, {
     path: "/",
   });
+  const response = {
+    message: "Sesión iniciada",
+    error: null,
+    data: null,
+  };
+  return new Response(JSON.stringify(response), { status: 200 });
 
- return redirect(HOME_URL);
 };
