@@ -1,14 +1,65 @@
 ---
+import PassworInput from "@/components/input/PassworInput.astro";
 import BaseLayout from "@/layouts/BaseLayout.astro";
+
 ---
 
 <BaseLayout title="Inicio de sesión">
-    <h1>Iniciar sesión</h1>
-    <form action="/api/auth/sign-in" method="POST">
-        <label for="email">Correo</label>
-        <input type="email" name="email" id="email" />
-        <label for="password">Contraseña</label>
-        <input type="password" name="password" id="password" />
-        <button type="submit">Iniciar sesión</button>
-    </form>
+    <div class="flex items-center justify-center min-w-screen min-h-screen">
+        <div class="container flex flex-col items-center gap-4">
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="w-36 h-36"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                class="icon icon-tabler icons-tabler-filled icon-tabler-soup"
+                ><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path
+                    d="M20 10a2 2 0 0 1 2 2v.5c0 1.694 -2.247 5.49 -3.983 6.983l-.017 .013v.504a2 2 0 0 1 -1.85 1.995l-.15 .005h-8a2 2 0 0 1 -2 -2v-.496l-.065 -.053c-1.76 -1.496 -3.794 -4.965 -3.928 -6.77l-.007 -.181v-.5a2 2 0 0 1 2 -2z"
+                ></path><path
+                    d="M11.417 3.188a1 1 0 1 1 1.166 1.624c-.375 .27 -.593 .706 -.583 1.209a1.4 1.4 0 0 0 .583 1.167a1 1 0 1 1 -1.166 1.624a3.38 3.38 0 0 1 -1.417 -2.791a3.4 3.4 0 0 1 1.417 -2.833"
+                ></path><path
+                    d="M15.417 3.188a1 1 0 1 1 1.166 1.624c-.375 .27 -.593 .706 -.583 1.209a1.4 1.4 0 0 0 .583 1.167a1 1 0 1 1 -1.166 1.624a3.38 3.38 0 0 1 -1.417 -2.791a3.4 3.4 0 0 1 1.417 -2.833"
+                ></path><path
+                    d="M7.417 3.188a1 1 0 1 1 1.166 1.624c-.375 .27 -.593 .706 -.583 1.209a1.4 1.4 0 0 0 .583 1.167a1 1 0 1 1 -1.166 1.624a3.38 3.38 0 0 1 -1.417 -2.791a3.4 3.4 0 0 1 1.417 -2.833"
+                ></path></svg
+            >
+            <div>
+                <h1 class="font-semibold text-6xl text-center">Bienvenido</h1>
+                <h2 class="text-2xl text-center">
+                    Introduzca sus credenciales
+                </h2>
+            </div>
+
+            <form
+                action="/api/auth/sign-in"
+                method="POST"
+                class="flex flex-col gap-2 items-center"
+            >
+                <label
+                    class="input input-bordered flex items-center gap-2 max-w-xs w-full"
+                >
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="icon icon-tabler icons-tabler-outline icon-tabler-user"
+                        ><path stroke="none" d="M0 0h24v24H0z" fill="none"
+                        ></path><path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0"
+                        ></path><path
+                            d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"
+                        ></path></svg
+                    >
+                    <input type="text" name="text" id="email" class="grow" placeholder="Usuario*" />
+                </label>
+                <PassworInput />
+                <button type="submit" class="btn btn-primary">Ingresar</button>
+            </form>
+        </div>
+    </div>
 </BaseLayout>

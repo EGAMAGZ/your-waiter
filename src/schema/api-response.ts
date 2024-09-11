@@ -1,4 +1,5 @@
-export type ApiResponse<T> = {
+export type ApiResponse<T = null> = {
     message: string;
-    data: T
+    data: T;
+    error?: string;
 }

@@ -1,6 +1,7 @@
 import type { APIRoute } from "astro";
 import { supabase } from "@/lib/supabase";
 import { ACCESS_TOKEN_NAME, HOME_URL, REFRESH_TOKEN_NAME } from "@/util/constants";
+import type { ApiResponse } from "@/schema/api-response";
 
 export const POST: APIRoute = async ({ request, cookies, redirect }) => {
   const formData = await request.formData();
@@ -8,7 +9,12 @@ export const POST: APIRoute = async ({ request, cookies, redirect }) => {
   const password = formData.get("password")?.toString();
 
   if (!email || !password) {
-    return new Response("Correo electrónico y contraseña obligatorios", { status: 400 });
+    const response: ApiResponse = {
+      message: "Correo electrónico y contraseña obligatorios",
+      error: "Validation error",
+      data: null,
+    };
+    return new Response(JSON.stringify(response), { status: 400 });
   }
 
   const { data, error } = await supabase.auth.signInWithPassword({
@@ -28,5 +34,5 @@ export const POST: APIRoute = async ({ request, cookies, redirect }) => {
     path: "/",
   });
 
-  return redirect(HOME_URL);
+ return redirect(HOME_URL);
 };
