@@ -16,16 +16,15 @@ export default function SignInForm() {
       },
       body: formDataToJson(formData),
     });
-    
-    const {error} = await response.json() as ApiResponse<SignIn>;
+
+    const { error } = await response.json() as ApiResponse<SignIn>;
 
     if (response.status === 200) {
       window.location.replace(HOME_URL);
       return;
     }
 
-    if(error){
-
+    if (error) {
     }
   };
 

@@ -1,6 +1,7 @@
 import { supabase } from "@/lib/supabase";
 import {
   ACCESS_TOKEN_NAME,
+  HOME_URL,
   PUBLIC_URLS,
   REFRESH_TOKEN_NAME,
   SIGN_IN_URL,

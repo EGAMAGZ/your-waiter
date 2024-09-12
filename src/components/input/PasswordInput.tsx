@@ -3,7 +3,9 @@ import { useSignal } from "@preact/signals";
 export default function PasswordInput() {
   const showPassword = useSignal(false);
 
-  const handleClick = () => { showPassword.value = !showPassword.value;};
+  const handleClick = () => {
+    showPassword.value = !showPassword.value;
+  };
 
   return (
     <label class="input input-bordered flex items-center gap-2 max-w-xs w-full">
