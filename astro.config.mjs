@@ -1,6 +1,6 @@
-import { defineConfig } from 'astro/config';
+import { defineConfig } from "astro/config";
 
-import deno from "@astrojs/deno"
+import deno from "@astrojs/deno";
 import tailwind from "@astrojs/tailwind";
 
 import preact from "@astrojs/preact";
@@ -11,6 +11,6 @@ export default defineConfig({
   devToolbar: {
     enabled: false,
   },
-  output: 'server',
-  adapter: deno()
+  output: "server",
+  adapter: deno(),
 });

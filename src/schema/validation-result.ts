@@ -1,4 +1,4 @@
 export type ValidationResult = {
-    message: string;
-    status: "authorized" | "unauthorized" | "error";
-}
+  message: string;
+  status: "authorized" | "unauthorized" | "error";
+};
