@@ -10,8 +10,9 @@ interface ImportMeta {
 
 declare namespace App {
   interface Locals {
-    user: {
-      role: string;
+    role: {
+      name: string;
+      id: number;
     };
     welcomeTitle: () => string;
   }

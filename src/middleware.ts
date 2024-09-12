@@ -1,7 +1,6 @@
 import { supabase } from "@/lib/supabase";
 import {
   ACCESS_TOKEN_NAME,
-  HOME_URL,
   PUBLIC_URLS,
   REFRESH_TOKEN_NAME,
   SIGN_IN_URL,
@@ -10,6 +9,7 @@ import type { APIContext, MiddlewareNext } from "astro";
 import { sequence } from "astro:middleware";
 import type { ValidationResult } from "./schema/validation-result";
 import type { ApiResponse } from "./schema/api-response";
+import type { QueryData } from "@supabase/supabase-js";
 
 /**
  * Verifies the given access and refresh tokens with Supabase.
@@ -86,12 +86,52 @@ async function authenticate(context: APIContext, next: MiddlewareNext) {
   }
 }
 
+/**
+ * Middleware that retrieves the user's role and stores it in the context,
+ * as well as generating a welcome title.
+ *
+ * @param context The Astro context.
+ * @param next The next middleware to call.
+ * @returns A promise that resolves with the result of calling `next`, or redirects to the sign-in page if the user is not authenticated.
+ */
 async function profile(context: APIContext, next: MiddlewareNext) {
-  context.locals.user = {
-    role: "cocina",
+  if (PUBLIC_URLS.includes(context.url.pathname)) {
+    return await next();
+  }
+
+  const userId = (await supabase.auth.getUser()).data.user?.id;
+
+  if (!userId) {
+    console.error("No user Id");
+    return context.redirect(SIGN_IN_URL);
+  }
+
+  const workerQuery = supabase
+    .from("Worker")
+    .select(`Role(id_role, txt_name)`)
+    .eq("id_user", userId)
+    .single();
+
+  const { data: workerData, error: workerError } = await workerQuery;
+
+  if (workerError) {
+    console.error(workerError);
+    return context.redirect(SIGN_IN_URL);
+  }
+
+  const role = workerData.Role;
+
+  if (!role) {
+    console.error("No role");
+    return context.redirect(SIGN_IN_URL);
+  }
+
+  context.locals.role = {
+    id: role.id_role,
+    name: role.txt_name,
   };
 
-  context.locals.welcomeTitle = () => `Bienvenido ${context.locals.user.role}`;
+  context.locals.welcomeTitle = () => `Bienvenido ${context.locals.role.name}`;
 
   return await next();
 }
