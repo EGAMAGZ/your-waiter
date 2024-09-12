@@ -2,6 +2,9 @@ import { useSignal } from "@preact/signals";
 
 export default function PasswordInput() {
   const showPassword = useSignal(false);
+
+  const handleClick = () => { showPassword.value = !showPassword.value;};
+
   return (
     <label class="input input-bordered flex items-center gap-2 max-w-xs w-full">
       <svg
@@ -31,11 +34,9 @@ export default function PasswordInput() {
       />
 
       <button
-        class="btn btn-ghost"
+        class="btn btn-ghost btn-sm"
         type="button"
-        onClick={() => {
-          showPassword.value = !showPassword.value;
-        }}
+        onClick={handleClick}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"

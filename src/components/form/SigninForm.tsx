@@ -1,5 +1,8 @@
 import PasswordInput from "@/components/input/PasswordInput";
+import type { ApiResponse } from "@/schema/api-response";
+import type { SignIn } from "@/schema/sign-in";
 import { HOME_URL } from "@/util/constants";
+import { formDataToJson } from "@/util/transformers";
 
 export default function SignInForm() {
   const handleSubmit = async (event: SubmitEvent) => {
@@ -11,11 +14,18 @@ export default function SignInForm() {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(Object.fromEntries(formData.entries())),
+      body: formDataToJson(formData),
     });
+    
+    const {error} = await response.json() as ApiResponse<SignIn>;
 
     if (response.status === 200) {
       window.location.replace(HOME_URL);
+      return;
+    }
+
+    if(error){
+
     }
   };
 
