@@ -1,10 +1,6 @@
 import type { APIRoute } from "astro";
 import { supabase } from "@/lib/supabase";
-import {
-  ACCESS_TOKEN_NAME,
-  HOME_URL,
-  REFRESH_TOKEN_NAME,
-} from "@/util/constants";
+import { ACCESS_TOKEN_NAME, REFRESH_TOKEN_NAME } from "@/util/constants";
 import type { ApiResponse } from "@/schema/api-response";
 import { type SignIn, SignInSchema } from "@/schema/sign-in";
 
@@ -37,6 +33,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       error: "authentication_error",
       message: error.message,
     };
+
     return Response.json(response, {
       status: 500,
     });

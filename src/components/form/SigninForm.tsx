@@ -4,14 +4,14 @@ import { HOME_URL } from "@/util/constants";
 export default function SignInForm() {
   const handleSubmit = async (event: SubmitEvent) => {
     event.preventDefault();
-    const formData = new FormData(event.currentTarget as HTMLFormElement);
+    const formData = new FormData(event.target as HTMLFormElement);
 
     const response = await fetch("/api/auth/sign-in", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(formData),
+      body: JSON.stringify(Object.fromEntries(formData.entries())),
     });
 
     if (response.status === 200) {
@@ -22,6 +22,7 @@ export default function SignInForm() {
   return (
     <form
       class="flex flex-col gap-2 items-center"
+      method="POST"
       onSubmit={handleSubmit}
     >
       <label class="input input-bordered flex items-center gap-2 max-w-xs w-full">
