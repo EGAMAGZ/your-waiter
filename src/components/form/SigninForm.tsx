@@ -1,13 +1,26 @@
 import PasswordInput from "@/components/input/PasswordInput";
+import { HOME_URL } from "@/util/constants";
 
 export default function SignInForm() {
-    const handleSubmit = () => {
+    const handleSubmit = async (event: SubmitEvent) => {
+	event.preventDefault();
+	const formData = new FormData(event.currentTarget as HTMLFormElement);
+
+	const response = await fetch("/api/auth/sign-in", {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json"
+		},
+		body: JSON.stringify(formData)
+	});
+
+	if(response.status === 200){
+		window.location.replace(HOME_URL)
+	}
     };
 
     return (
         <form
-            action="/api/auth/sign-in"
-            method="POST"
             class="flex flex-col gap-2 items-center"
             onSubmit={handleSubmit}
         >

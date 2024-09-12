@@ -70,6 +70,10 @@ async function authenticate(context: APIContext, next: MiddlewareNext) {
 
 }
 
+async function handleExceptions(context: APIContext, next: MiddlewareNext){
+
+}
+
 async function profile(context: APIContext, next: MiddlewareNext) {
     context.locals.user = {
         role: "cocina"
