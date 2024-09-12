@@ -1,4 +1,7 @@
-type ApiErrors = "authentication_error" | "validation_error";
+type ApiErrors =
+	| "authentication_error" 
+	| "validation_error"
+	| "server_error";
 
 type SuccesApiReponse<T> = {
   message: string;
