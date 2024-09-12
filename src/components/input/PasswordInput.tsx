@@ -30,6 +30,8 @@ export default function PasswordInput() {
                 placeholder="Contraseña*"
             />
 
+	    <button class="btn btn-ghost" onClick={() => {showPassword.value = !showPassword.value}}>
+
             <svg
                 xmlns="http://www.w3.org/2000/svg"
                 id="show-password"
@@ -42,10 +44,6 @@ export default function PasswordInput() {
                 class={`icon icon-tabler icons-tabler-outline icon-tabler-eye w-6 h-6 ${
                     showPassword.value ? "hidden" : ""
                 }`}
-                onClick={() => {
-                    showPassword.value = false;
-			console.log("	")
-                }}
             >
                 <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                 <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0"></path>
@@ -64,9 +62,6 @@ export default function PasswordInput() {
                 class={`icon icon-tabler icons-tabler-outline icon-tabler-eye-off w-6 h-6 ${
                     showPassword.value ? "" : "hidden"
                 }`}
-                onClick={() => {
-                    showPassword.value = true;
-                }}
             >
                 <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                 <path d="M10.585 10.587a2 2 0 0 0 2.829 2.828"></path>
@@ -74,6 +69,7 @@ export default function PasswordInput() {
                 </path>
                 <path d="M3 3l18 18"></path>
             </svg>
+	    </button>
         </label>
     );
 }
