@@ -9,7 +9,6 @@ import type { APIContext, MiddlewareNext } from "astro";
 import { sequence } from "astro:middleware";
 import type { ValidationResult } from "./schema/validation-result";
 import type { ApiResponse } from "./schema/api-response";
-import type { QueryData } from "@supabase/supabase-js";
 
 /**
  * Verifies the given access and refresh tokens with Supabase.
@@ -126,12 +125,7 @@ async function profile(context: APIContext, next: MiddlewareNext) {
     return context.redirect(SIGN_IN_URL);
   }
 
-  context.locals.role = {
-    id: role.id_role,
-    name: role.txt_name,
-  };
-
-  context.locals.welcomeTitle = () => `Bienvenido ${context.locals.role.name}`;
+  context.locals.welcomeTitle = () => `Bienvenido`;
 
   return await next();
 }

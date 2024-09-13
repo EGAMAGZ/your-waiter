@@ -56,7 +56,7 @@ export default function SignInForm() {
           name="email"
           id="email"
           class="grow"
-          placeholder="Correo"
+          placeholder="Correo*"
         />
       </label>
       <PasswordInput />

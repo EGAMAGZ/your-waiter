@@ -13,7 +13,7 @@ if (!title.endsWith("| Your Waiter") && !noAppendTitle) {
 }
 ---
 
-<html lang="es">
+<html lang="es" data-theme="corporate">
     <head>
         <meta charset="utf-8" />
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -21,7 +21,7 @@ if (!title.endsWith("| Your Waiter") && !noAppendTitle) {
         <meta name="generator" content={Astro.generator} />
         <title>{title}</title>
     </head>
-    <body data-theme="corporate">
+    <body>
         <slot />
     </body>
 </html>
