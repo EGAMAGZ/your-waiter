@@ -92,14 +92,19 @@ async function authenticate(context: APIContext, next: MiddlewareNext) {
   }
 }
 
-  /**
-   * Middleware that loads the user's role and stores it in the request context.
-   * If the user is not authenticated or the role can't be loaded, redirects to the sign-in page.
-   * @param context The Astro context.
-   * @param next The next middleware to call.
-   * @returns A promise that resolves with the result of calling `next`, or redirects to the sign-in page if the user is not authenticated or the role can't be loaded.
-   */
+/**
+ * Middleware that loads the user's role and stores it in the request context.
+ * If the user is not authenticated or the role can't be loaded, redirects to the sign-in page.
+ * @param context The Astro context.
+ * @param next The next middleware to call.
+ * @returns A promise that resolves with the result of calling `next`, or redirects to the sign-in page if the user is not authenticated or the role can't be loaded.
+ */
 async function profile(context: APIContext, next: MiddlewareNext) {
+  // If the navigation heads to the signin url, the profile retrieving will me omitted
+  if (context.url.pathname === SIGN_IN_URL) {
+    return await next();
+  }
+
   const userId = (await supabase.auth.getUser()).data.user?.id;
 
   if (!userId) {
@@ -137,19 +142,25 @@ async function profile(context: APIContext, next: MiddlewareNext) {
   return await next();
 }
 
-  /**
-   * Middleware that checks if the user can access the current route based on their role.
-   * If the user can't access the route, redirects them to the home page.
-   * @param context The Astro context.
-   * @param next The next middleware to call.
-   * @returns A promise that resolves with the result of calling `next`, or redirects to the home page if the user can't access the route.
-   */
+/**
+ * Middleware that checks if the user can access the current route based on their role.
+ * If the user can't access the route, redirects them to the home page.
+ * @param context The Astro context.
+ * @param next The next middleware to call.
+ * @returns A promise that resolves with the result of calling `next`, or redirects to the home page if the user can't access the route.
+ */
 function accessControl(context: APIContext, next: MiddlewareNext) {
+  // At this point, the user is has an active and valid session so, if the user navigates to sign-in, they will be redirected to HOME_URL
+  if (context.url.pathname === SIGN_IN_URL) {
+    return context.redirect(HOME_URL);
+  }
+
+  // If the user (with active and valid session) navigates to HOME_URL, they will access to it
+  if (context.url.pathname === HOME_URL) return next();
+
   const canAccess = context.locals.navigationOptions
     .map((option: NavigationOption) => option.path)
     .some((path) => context.url.pathname.startsWith(path));
-
-  if (context.url.pathname.includes(HOME_URL)) return next();
 
   if (canAccess) return next();
 
