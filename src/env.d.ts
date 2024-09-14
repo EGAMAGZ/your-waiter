@@ -15,6 +15,10 @@ declare namespace App {
       id: number;
       name: string;
     }; // TODO: FIND A WAY TO USE THE TYPE FROM role.ts
+    navigationOptions: {
+      path: string;
+      name: string;
+    }[]; // TODO: FIND A WAY TO USE THE TYPE FROM role.ts
     welcomeTitle: () => string;
     serverError?: string;
   }

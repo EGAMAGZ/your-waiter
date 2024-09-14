@@ -16,3 +16,25 @@ export const accessControl = {
   "cashier": [HOME_URL, "/cashier"],
   "waiter": [HOME_URL, "/waiter"],
 } as const;
+
+export type NavigationOption = {
+  path: string;
+  name: string;
+};
+
+export const navigationOptions: Record<string, NavigationOption[]> = {
+  "kitchen": [
+    { path: "/orders", name: "Gestionar ordenes" },
+    { path: "/availability", name: "Disponibilidad" },
+  ],
+  "cashier": [
+    { path: "/manage-dishes", name: "Gestionar platillo" },
+    {
+      path: "/manage-bills",
+      name: "Gestionar cuentas",
+    },
+  ],
+  "waiter": [
+    { path: "/manage-tables", name: "Gestionar mesas" },
+  ],
+};
