@@ -1,0 +1,16 @@
+---
+interface Props {
+	title: string;
+	path: string;
+}
+
+const { path, title } = Astro.props;
+---
+<div class="card card-bordered border-black">
+	<a href=`${path}`>
+		<div class="card-body items-center">
+			<svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="w-14 h-14 icon icon-tabler icons-tabler-outline icon-tabler-list"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 6l11 0" /><path d="M9 12l11 0" /><path d="M9 18l11 0" /><path d="M5 6l0 .01" /><path d="M5 12l0 .01" /><path d="M5 18l0 .01" /></svg>
+			<span class="text-xl font-semibold">{title}</span>
+		</div>
+	</a>
+</div>

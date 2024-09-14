@@ -87,14 +87,6 @@ async function authenticate(context: APIContext, next: MiddlewareNext) {
   }
 }
 
-/**
- * Middleware that retrieves the user's role and stores it in the context,
- * as well as generating a welcome title.
- *
- * @param context The Astro context.
- * @param next The next middleware to call.
- * @returns A promise that resolves with the result of calling `next`, or redirects to the sign-in page if the user is not authenticated.
- */
 async function profile(context: APIContext, next: MiddlewareNext) {
   if (PUBLIC_URLS.includes(context.url.pathname)) {
     return await next();

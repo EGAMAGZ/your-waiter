@@ -3,6 +3,7 @@ import { HOME_URL } from "@/util/constants";
 import type { NavigationOption } from "@/util/role";
 
 const { role, navigationOptions } = Astro.locals;
+const { pathname } = Astro.url;
 ---
 <nav class="navbar">
 	<div class="flex-none flex items-center gap-2">
@@ -15,7 +16,7 @@ const { role, navigationOptions } = Astro.locals;
 		<ul class="menu menu-horizontal px-1">
 			{navigationOptions.map((option: NavigationOption) => (
 				<li>
-					<a href=`${option.path}`>{option.name}</a>
+					<a href=`${option.path}` class=`${option.path === pathname ? "active": ""}`>{option.name}</a>
 				</li>
 			))}
 		</ul>

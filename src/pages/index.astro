@@ -1,12 +1,20 @@
 ---
 import ProfileLayout from "@/layouts/ProfileLayout.astro";
+import NavigationCard from "@/components/NavigationCard.astro";
 
-const { locals } = Astro;
+const { welcomeTitle, navigationOptions } = Astro.locals;
 ---
 
 <ProfileLayout title="Your Waiter">
-    <h1>{locals.welcomeTitle()}</h1>
-    <form action="/api/auth/sign-out">
-        <button type="submit">Cerrar sesión</button>
-    </form>
+	<div class="container mx-auto flex flex-col gap-2">
+	    <h1 class="text-center text-5xl font-bold mt-8 mb-4">{welcomeTitle()}</h1>
+	    <div class="grid grid-cols-2 items-center gap-6">
+		{
+		    navigationOptions.map((option)=> (
+		    <NavigationCard path={option.path} title={option.name} >
+		    </NavigationCard>
+		    ))
+		}
+	    </div>
+	</div>
 </ProfileLayout>

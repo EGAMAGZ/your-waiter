@@ -24,8 +24,8 @@ export type NavigationOption = {
 
 export const navigationOptions: Record<string, NavigationOption[]> = {
   "kitchen": [
-    { path: "/orders", name: "Gestionar ordenes" },
-    { path: "/availability", name: "Disponibilidad" },
+    { path: "/manage-orders", name: "Gestionar ordenes" },
+    { path: "/dish-availability", name: "Disponibilidad" },
   ],
   "cashier": [
     { path: "/manage-dishes", name: "Gestionar platillo" },
