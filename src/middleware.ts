@@ -1,6 +1,7 @@
 import { supabase } from "@/lib/supabase";
 import {
   ACCESS_TOKEN_NAME,
+  HOME_URL,
   PUBLIC_URLS,
   REFRESH_TOKEN_NAME,
   SIGN_IN_URL,
@@ -9,7 +10,11 @@ import type { APIContext, MiddlewareNext } from "astro";
 import { sequence } from "astro:middleware";
 import type { ValidationResult } from "./schema/validation-result";
 import type { ApiResponse } from "./schema/api-response";
-import { navigationOptions, rolesName } from "./util/role";
+import {
+  type NavigationOption,
+  navigationOptions,
+  rolesName,
+} from "./util/role";
 import type { QueryData } from "@supabase/supabase-js";
 
 /**
@@ -88,10 +93,6 @@ async function authenticate(context: APIContext, next: MiddlewareNext) {
 }
 
 async function profile(context: APIContext, next: MiddlewareNext) {
-  if (PUBLIC_URLS.includes(context.url.pathname)) {
-    return await next();
-  }
-
   const userId = (await supabase.auth.getUser()).data.user?.id;
 
   if (!userId) {
@@ -106,7 +107,6 @@ async function profile(context: APIContext, next: MiddlewareNext) {
 
   const { data, error: workerError } = await workerQuery;
 
-  // TODO: Improve error handling by showing error message in a toast
   if (workerError) {
     context.locals.serverError = "Sesion de trabajador invalido";
     return context.redirect(SIGN_IN_URL);
@@ -131,6 +131,15 @@ async function profile(context: APIContext, next: MiddlewareNext) {
 }
 
 function accessControl(context: APIContext, next: MiddlewareNext) {
-  return next();
+  const canAccess = context.locals.navigationOptions
+    .map((option: NavigationOption) => option.path)
+    .some((path) => context.url.pathname.startsWith(path));
+
+  if (context.url.pathname.includes(HOME_URL)) return next();
+
+  if (canAccess) return next();
+
+  return context.redirect(HOME_URL);
 }
+
 export const onRequest = sequence(authenticate, profile, accessControl);

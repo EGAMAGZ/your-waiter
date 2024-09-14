@@ -1,8 +1,6 @@
-import { HOME_URL } from "./constants";
-
 export type Role = {
   id: number;
-  name: string;
+  name: keyof typeof rolesName;
 };
 
 export const rolesName: Record<string, string> = {
@@ -10,12 +8,6 @@ export const rolesName: Record<string, string> = {
   "cashier": "Cajero",
   "waiter": "Mesero",
 };
-
-export const accessControl = {
-  "kitchen": [HOME_URL, "/kitchen"],
-  "cashier": [HOME_URL, "/cashier"],
-  "waiter": [HOME_URL, "/waiter"],
-} as const;
 
 export type NavigationOption = {
   path: string;
