@@ -100,11 +100,10 @@ async function authenticate(context: APIContext, next: MiddlewareNext) {
  * @returns A promise that resolves with the result of calling `next`, or redirects to the sign-in page if the user is not authenticated or the role can't be loaded.
  */
 async function profile(context: APIContext, next: MiddlewareNext) {
-  // If the navigation heads to the signin url, the profile retrieving will me omitted
-  if (context.url.pathname === SIGN_IN_URL) {
+  // If the navigation heads to a public url, the profile retrieving will me omitted
+  if (PUBLIC_URLS.includes(context.url.pathname)) {
     return await next();
   }
-
   const userId = (await supabase.auth.getUser()).data.user?.id;
 
   if (!userId) {
@@ -150,11 +149,11 @@ async function profile(context: APIContext, next: MiddlewareNext) {
  * @returns A promise that resolves with the result of calling `next`, or redirects to the home page if the user can't access the route.
  */
 function accessControl(context: APIContext, next: MiddlewareNext) {
+	// FIXME: IF USER HAS A SESSION; THEY CAN ACCESS TO SIGNIN
   // At this point, the user is has an active and valid session so, if the user navigates to sign-in, they will be redirected to HOME_URL
-  if (context.url.pathname === SIGN_IN_URL) {
-    return context.redirect(HOME_URL);
+  if (PUBLIC_URLS.includes(context.url.pathname)) {
+    return next();
   }
-
   // If the user (with active and valid session) navigates to HOME_URL, they will access to it
   if (context.url.pathname === HOME_URL) return next();
 
