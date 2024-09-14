@@ -1,0 +1,32 @@
+---
+import Toasts from '@/components/Toasts.astro';
+
+interface Props {
+    title?: string;
+    noAppendTitle?: boolean;
+}
+
+const DEFAULT_TITLE = "Your Waiter";
+
+let { title = DEFAULT_TITLE, noAppendTitle } = Astro.props;
+
+const { serverError  } = Astro.locals;
+
+if (!title.endsWith("| Your Waiter") && !noAppendTitle) {
+    title = `${title} | Your Waiter`;
+}
+---
+
+<html lang="es" data-theme="corporate">
+    <head>
+        <meta charset="utf-8" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <meta name="viewport" content="width=device-width" />
+        <meta name="generator" content={Astro.generator} />
+        <title>{title}</title>
+    </head>
+    <body>
+	    <Toasts errorMessage={serverError} />
+        <slot />
+    </body>
+</html>

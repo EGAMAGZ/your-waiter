@@ -1,16 +1,20 @@
 ---
+import ProfileLayout from "@/layouts/ProfileLayout.astro";
+import NavigationCard from "@/components/NavigationCard.astro";
 
+const { welcomeTitle, navigationOptions } = Astro.locals;
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<ProfileLayout title="Your Waiter">
+	<div class="container mx-auto flex flex-col gap-2">
+	    <h1 class="text-center text-5xl font-bold mt-8 mb-4">{welcomeTitle()}</h1>
+	    <div class="grid grid-cols-2 items-center gap-6">
+		{
+		    navigationOptions.map((option)=> (
+		    <NavigationCard path={option.path} title={option.name} >
+		    </NavigationCard>
+		    ))
+		}
+	    </div>
+	</div>
+</ProfileLayout>
