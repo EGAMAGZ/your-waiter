@@ -101,7 +101,6 @@ async function profile(context: APIContext, next: MiddlewareNext) {
   const userId = (await supabase.auth.getUser()).data.user?.id;
 
   if (!userId) {
-    console.error("No user Id");
     return context.redirect(SIGN_IN_URL);
   }
 
@@ -114,14 +113,14 @@ async function profile(context: APIContext, next: MiddlewareNext) {
   const { data: workerData, error: workerError } = await workerQuery;
 
   if (workerError) {
-    console.error(workerError);
+	  context.locals.serverError = "Sesion de trabajador invalido";
     return context.redirect(SIGN_IN_URL);
   }
 
   const role = workerData.Role;
 
   if (!role) {
-    console.error("No role");
+	  context.locals.serverError = "Error al obtener el rol de trabajador";
     return context.redirect(SIGN_IN_URL);
   }
 

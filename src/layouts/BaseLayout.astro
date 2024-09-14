@@ -1,4 +1,6 @@
 ---
+import Toasts from '@/components/Toasts.astro';
+
 interface Props {
     title?: string;
     noAppendTitle?: boolean;
@@ -7,6 +9,8 @@ interface Props {
 const DEFAULT_TITLE = "Your Waiter";
 
 let { title = DEFAULT_TITLE, noAppendTitle } = Astro.props;
+
+const { serverError  } = Astro.locals;
 
 if (!title.endsWith("| Your Waiter") && !noAppendTitle) {
     title = `${title} | Your Waiter`;
@@ -22,6 +26,7 @@ if (!title.endsWith("| Your Waiter") && !noAppendTitle) {
         <title>{title}</title>
     </head>
     <body>
+	    <Toasts errorMessage={serverError} />
         <slot />
     </body>
 </html>
