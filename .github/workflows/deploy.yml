@@ -1,23 +1,26 @@
 name: Deploy
-on: [push]
+on:
+  push:
+    branches: [master, development]
+  pull_request:
+    branches: [master, development]
 
 jobs:
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
+
     permissions:
-      id-token: write # Necesario para la autentificación con Deno Deploy
-      contents: read # Necesario para clonar el repositorio
+      id-token: write
+      contents: read
 
     steps:
       - name: Clonar el repositorio
         uses: actions/checkout@v4
 
-      # ¿No usas npm? Cambia `npm ci` por `yarn install` o `pnpm i`.
       - name: Instalar las dependencias
         run: npm install --force
 
-      # ¿No usas npm? Cambia `npm run build` por `yarn build` o `pnpm run build`.
       - name: Construir Astro
         run: npm run build
 

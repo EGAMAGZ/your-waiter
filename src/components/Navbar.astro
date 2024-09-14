@@ -1,0 +1,44 @@
+---
+import { HOME_URL } from "@/util/constants";
+import type { NavigationOption } from "@/util/role";
+
+const { role, navigationOptions } = Astro.locals;
+const { pathname } = Astro.url;
+---
+<nav class="navbar">
+	<div class="flex-none flex items-center gap-2">
+		<a href=`${HOME_URL}` class="btn btn-ghost">
+			<svg  xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24"  fill="currentColor"  class="w-8 h-8 icon icon-tabler icons-tabler-filled icon-tabler-soup"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M20 10a2 2 0 0 1 2 2v.5c0 1.694 -2.247 5.49 -3.983 6.983l-.017 .013v.504a2 2 0 0 1 -1.85 1.995l-.15 .005h-8a2 2 0 0 1 -2 -2v-.496l-.065 -.053c-1.76 -1.496 -3.794 -4.965 -3.928 -6.77l-.007 -.181v-.5a2 2 0 0 1 2 -2z" /><path d="M11.417 3.188a1 1 0 1 1 1.166 1.624c-.375 .27 -.593 .706 -.583 1.209a1.4 1.4 0 0 0 .583 1.167a1 1 0 1 1 -1.166 1.624a3.38 3.38 0 0 1 -1.417 -2.791a3.4 3.4 0 0 1 1.417 -2.833" /><path d="M15.417 3.188a1 1 0 1 1 1.166 1.624c-.375 .27 -.593 .706 -.583 1.209a1.4 1.4 0 0 0 .583 1.167a1 1 0 1 1 -1.166 1.624a3.38 3.38 0 0 1 -1.417 -2.791a3.4 3.4 0 0 1 1.417 -2.833" /><path d="M7.417 3.188a1 1 0 1 1 1.166 1.624c-.375 .27 -.593 .706 -.583 1.209a1.4 1.4 0 0 0 .583 1.167a1 1 0 1 1 -1.166 1.624a3.38 3.38 0 0 1 -1.417 -2.791a3.4 3.4 0 0 1 1.417 -2.833" /></svg>
+			<span class="font-semibold text-xl">YourWaiter</span>
+		</a>
+	</div>
+	<div class="flex-1 flex flex-row-reverse">
+		<ul class="menu menu-horizontal px-1">
+			{navigationOptions.map((option: NavigationOption) => (
+				<li>
+					<a href=`${option.path}` class=`${option.path === pathname ? "active": ""}`>{option.name}</a>
+				</li>
+			))}
+		</ul>
+	</div>
+	<div class="flex-none">
+		<div class="dropdown dropdown-end">
+			<div tabindex="0" role="button" class="btn btn-ghost">
+				<div class="flex items-center gap-2">
+					<span>Perfil {role.name}</span>
+					<svg  xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24"  fill="currentColor"  class="w-6 h-6 icon icon-tabler icons-tabler-filled icon-tabler-user"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 2a5 5 0 1 1 -5 5l.005 -.217a5 5 0 0 1 4.995 -4.783z" /><path d="M14 14a5 5 0 0 1 5 5v1a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-1a5 5 0 0 1 5 -5h4z" /></svg>
+				</div>
+			</div>
+			<ul
+				tabindex="0"
+				class="menu menu-sm dropdown-content z-[1] w-40 shadow">
+				<li>
+					<a href="/api/auth/sign-out">
+						<svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="w-4 h-4 icon icon-tabler icons-tabler-outline icon-tabler-logout"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2" /><path d="M9 12h12l-3 -3" /><path d="M18 15l3 -3" /></svg>
+						Cerrar sesión
+					</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+</nav>
