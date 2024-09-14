@@ -11,6 +11,10 @@ interface ImportMeta {
 
 declare namespace App {
   interface Locals {
+    role: {
+      id: number;
+      name: string;
+    }; // TODO: FIND A WAY TO USE THE TYPE FROM role.ts
     welcomeTitle: () => string;
     serverError?: string;
   }

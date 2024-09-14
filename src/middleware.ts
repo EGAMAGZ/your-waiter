@@ -9,6 +9,8 @@ import type { APIContext, MiddlewareNext } from "astro";
 import { sequence } from "astro:middleware";
 import type { ValidationResult } from "./schema/validation-result";
 import type { ApiResponse } from "./schema/api-response";
+import { rolesName } from "./util/role";
+import type { QueryData } from "@supabase/supabase-js";
 
 /**
  * Verifies the given access and refresh tokens with Supabase.
@@ -110,21 +112,28 @@ async function profile(context: APIContext, next: MiddlewareNext) {
     .eq("id_user", userId)
     .single();
 
-  const { data: workerData, error: workerError } = await workerQuery;
 
+  const { data, error: workerError } = await workerQuery;
+
+  // TODO: Improve error handling by showing error message in a toast
   if (workerError) {
-	  context.locals.serverError = "Sesion de trabajador invalido";
+    context.locals.serverError = "Sesion de trabajador invalido";
     return context.redirect(SIGN_IN_URL);
   }
+  const workerData: QueryData<typeof workerQuery> = data;
 
   const role = workerData.Role;
 
   if (!role) {
-	  context.locals.serverError = "Error al obtener el rol de trabajador";
+    context.locals.serverError = "Error al obtener el rol de trabajador";
     return context.redirect(SIGN_IN_URL);
   }
 
-  context.locals.welcomeTitle = () => `Bienvenido`;
+  context.locals.role = {
+    id: role.id_role,
+    name: rolesName[role.txt_name]
+  };
+  context.locals.welcomeTitle = () => `Bienvenido ${context.locals.role.name}`;
 
   return await next();
 }

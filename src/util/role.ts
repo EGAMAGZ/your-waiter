@@ -5,11 +5,11 @@ export type Role = {
   name: string;
 };
 
-export const roleName = {
+export const rolesName: Record<string, string> = {
   "kitchen": "Cocina",
   "cashier": "Cajero",
   "waiter": "Mesero",
-} as const;
+};
 
 export const accessControl = {
   "kitchen": [HOME_URL, "/kitchen"],
