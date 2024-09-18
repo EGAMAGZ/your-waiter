@@ -1,50 +1,61 @@
-import type { Dish } from "@/schema/dish";
-import { useSignal, useSignalEffect } from "@preact/signals";
-import SearchDishes from "./SearchDishes";
+import type { Ingredient } from "@/schema/ingredient";
+import { type Signal, useSignal, useSignalEffect } from "@preact/signals";
+import SearchIngredients from "./SearchIngredients";
 import type { ApiResponse } from "@/schema/api-response";
 
-export default function DishesTables() {
-  const dishes = useSignal<Dish[]>([]);
+export default function IngredientsTable() {
+  const ingredients = useSignal<Ingredient[]>([]);
 
   useSignalEffect(() => {
-    const getAllDishes = async () => {
-      const response = await fetch("/api/dish/search");
+    const getAllIngredients = async () => {
+      const response = await fetch("/api/ingredient/search");
 
-      const { data, error } = await response.json() as ApiResponse<Dish[]>;
+      const { data, error } = await response.json() as ApiResponse<
+        Ingredient[]
+      >;
 
       if (error) {
         console.log(error);
         return;
       }
-      dishes.value = data;
+
+      ingredients.value = data;
     };
-    getAllDishes();
+
+    getAllIngredients();
   });
 
   return (
     <div class="flex flex-col gap-2">
       <div class="flex flex-row justify-between">
-        <SearchDishes dishes={dishes} />
+        <SearchIngredients ingredients={ingredients} />
       </div>
       <div class="overscroll-x-auto">
         <table class="table table-zebra table-pin-cols">
           <thead>
             <tr>
-              <th>Platillo</th>
-              <th>Precio</th>
-              <th>Editar</th>
-              <th>Eliminar</th>
+              <th>
+                Ingrediente
+              </th>
+              <th>
+                Precio
+              </th>
+              <th>
+                Editar
+              </th>
+              <th>
+                Eliminar
+              </th>
             </tr>
           </thead>
           <tbody>
-            {dishes.value.map((dish) => (
+            {ingredients.value.map((ingredient) => (
               <tr>
                 <th>
-                  {dish.name}
+                  {ingredient.name}
                 </th>
-
                 <td>
-                  {dish.price}
+                  {ingredient.price}
                 </td>
 
                 <td>
