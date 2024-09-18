@@ -25,7 +25,7 @@ export default function SignInForm() {
     }
 
     if (error) {
-	    console.log(error)
+	console.log(error)
     }
   };
 

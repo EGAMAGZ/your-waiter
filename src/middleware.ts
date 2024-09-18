@@ -111,9 +111,9 @@ async function profile(context: APIContext, next: MiddlewareNext) {
   }
 
   const workerQuery = supabase
-    .from("Worker")
-    .select(`Role(id_role, txt_name)`)
-    .eq("id_user", userId)
+    .from("Trabajador")
+    .select(`Rol(id_rol, txt_nombre)`)
+    .eq("fk_id_usuario", userId)
     .single();
 
   const { data, error: workerError } = await workerQuery;
@@ -124,7 +124,7 @@ async function profile(context: APIContext, next: MiddlewareNext) {
   }
   const workerData: QueryData<typeof workerQuery> = data;
 
-  const role = workerData.Role;
+  const role = workerData.Rol;
 
   if (!role) {
     context.locals.serverError = "Error al obtener el rol de trabajador";
@@ -132,10 +132,10 @@ async function profile(context: APIContext, next: MiddlewareNext) {
   }
 
   context.locals.role = {
-    id: role.id_role,
-    name: rolesName[role.txt_name],
+    id: role.id_rol,
+    name: rolesName[role.txt_nombre],
   };
-  context.locals.navigationOptions = navigationOptions[role.txt_name];
+  context.locals.navigationOptions = navigationOptions[role.txt_nombre];
   context.locals.welcomeTitle = () => `Bienvenido ${context.locals.role.name}`;
 
   return await next();
