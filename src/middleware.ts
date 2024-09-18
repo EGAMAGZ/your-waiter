@@ -149,11 +149,10 @@ async function profile(context: APIContext, next: MiddlewareNext) {
  * @returns A promise that resolves with the result of calling `next`, or redirects to the home page if the user can't access the route.
  */
 function accessControl(context: APIContext, next: MiddlewareNext) {
-	// FIXME: IF USER HAS A SESSION; THEY CAN ACCESS TO SIGNIN
   // At this point, the user is has an active and valid session so, if the user navigates to sign-in, they will be redirected to HOME_URL
-  if (PUBLIC_URLS.includes(context.url.pathname)) {
-    return next();
-  }
+  if (context.url.pathname === SIGN_IN_URL) return next();
+  if (PUBLIC_URLS.includes(context.url.pathname)) return next();
+
   // If the user (with active and valid session) navigates to HOME_URL, they will access to it
   if (context.url.pathname === HOME_URL) return next();
 

@@ -1,6 +1,16 @@
 ---
-import ProfileLayout from "@/layouts/ProfileLayout.astro"
+import ProfileLayout from "@/layouts/ProfileLayout.astro";
+import AvailabilityTable from "@/components/cn-cd/AvailabilityTable";
 ---
-<ProfileLayout>
-	<h1 class="text-center text-5xl font-bold mt-8 mb-4">Disponibilidad de platillos</h1>
-</ProfileLayout
+
+<ProfileLayout title="Disponibilidad de platillos">
+	<div class="flex flex-col gap-4 px-4">
+		<h1 class="text-center text-5xl font-bold mt-8 mb-4">
+			Disponibilidad de platillos
+		</h1>
+		<AvailabilityTable client:load />
+		<div class="flex flex-row justify-end">
+			<a href="/" class="btn btn-neutral">Regresar</a>
+		</div>
+	</div>
+</ProfileLayout>
