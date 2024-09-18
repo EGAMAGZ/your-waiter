@@ -33,7 +33,7 @@ export default function AvailabilityTable() {
         <table className="table table-zebra table-pin-cols">
           <thead>
             <tr>
-              <th class="max-w-14">Cantidad disponible</th>
+              <th>Cantidad disponible</th>
               <th>Platillo</th>
             </tr>
           </thead>

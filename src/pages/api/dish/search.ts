@@ -1,10 +1,6 @@
 import { supabase } from "@/lib/supabase";
 import type { ApiResponse } from "@/schema/api-response";
-import {
-  type DishAvailability,
-  type DishSearch,
-  DishSearchSchema,
-} from "@/schema/dish";
+import { type Dish, type DishSearch, DishSearchSchema } from "@/schema/dish";
 import type { QueryData } from "@supabase/supabase-js";
 import type { APIRoute } from "astro";
 
@@ -19,6 +15,7 @@ export const POST: APIRoute = async ({ request }) => {
       message: parsedData.error.format(),
       error: "validation_error",
     };
+
     return Response.json(response, {
       status: 400,
     });
@@ -28,16 +25,18 @@ export const POST: APIRoute = async ({ request }) => {
 
   const dishesQuery = supabase
     .from("Platillo")
-    .select("txt_nombre,nu_cantidad")
+    .select(
+      "id_platillo,txt_nombre,nu_precio",
+    )
     .ilike("txt_nombre", `%${dishName}%`);
 
   const { data, error: dishesError } = await dishesQuery;
 
   if (dishesError) {
-    const response = {
+    const response: ApiResponse = {
       message: dishesError.message,
       error: "server_error",
-    } as ApiResponse;
+    };
 
     return Response.json(response, {
       status: 500,
@@ -46,16 +45,15 @@ export const POST: APIRoute = async ({ request }) => {
 
   const dishesData: QueryData<typeof dishesQuery> = data;
 
-  const dishesAvailability = dishesData.map((
-    dish,
-  ) => ({
+  const dishes = dishesData.map((dish) => ({
+    id: dish.id_platillo,
     name: dish.txt_nombre,
-    quantity: dish.nu_cantidad,
-  } as DishAvailability));
+    price: dish.nu_precio,
+  } as Dish));
 
-  const response: ApiResponse<DishAvailability[]> = {
-    data: dishesAvailability,
-    message: "Sucessfully found dish availability ",
+  const response: ApiResponse<Dish[]> = {
+    data: dishes,
+    message: "Successfully found dishes information",
   };
 
   return Response.json(response, {
@@ -63,10 +61,12 @@ export const POST: APIRoute = async ({ request }) => {
   });
 };
 
-export const GET = async () => {
+export const GET: APIRoute = async () => {
   const dishesQuery = supabase
     .from("Platillo")
-    .select("txt_nombre,nu_cantidad");
+    .select(
+      "id_platillo,txt_nombre,nu_precio",
+    );
 
   const { data, error: dishesError } = await dishesQuery;
 
@@ -83,17 +83,17 @@ export const GET = async () => {
 
   const dishesData: QueryData<typeof dishesQuery> = data;
 
-  const dishesAvailability = dishesData.map((
-    dish,
-  ) => ({
+  const dishes = dishesData.map((dish) => ({
+    id: dish.id_platillo,
     name: dish.txt_nombre,
-    quantity: dish.nu_cantidad,
-  } as DishAvailability));
+    price: dish.nu_precio,
+  } as Dish));
 
-  const response: ApiResponse<DishAvailability[]> = {
-    data: dishesAvailability,
-    message: "Sucessfully found dish availability ",
+  const response: ApiResponse<Dish[]> = {
+    data: dishes,
+    message: "Successfully found dishes information",
   };
+
   return Response.json(response, {
     status: 200,
   });

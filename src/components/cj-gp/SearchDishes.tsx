@@ -1,27 +1,25 @@
 import type { ApiResponse } from "@/schema/api-response";
-import type { DishAvailability, DishSearch } from "@/schema/dish";
+import type { Dish, DishSearch } from "@/schema/dish";
 import { Signal, useComputed, useSignal } from "@preact/signals";
 import type { ChangeEvent } from "preact/compat";
 
 interface Props {
-  dishes: Signal<DishAvailability[]>;
+  dishes: Signal<Dish[]>;
 }
 
-export default function SearchDishesAvailability({ dishes }: Props) {
-  const dishName = useSignal<string>("");
+export default function SearchDishes({ dishes }: Props) {
+  const dishName = useSignal("");
   const clearInput = useComputed(() => dishName.value.trim() !== "");
 
   const handleSearch = async () => {
-    const response = await fetch("/api/dish/availability", {
+    const response = await fetch("/api/dish/search", {
       method: "POST",
       body: JSON.stringify({
         dishName: dishName.value,
       } as DishSearch),
     });
 
-    const { data, error } = await response.json() as ApiResponse<
-      DishAvailability[]
-    >;
+    const { data, error } = await response.json() as ApiResponse<Dish[]>;
 
     if (error) {
       console.log(error);
