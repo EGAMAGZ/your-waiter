@@ -12,6 +12,14 @@ export default function SearchDishesAvailability({ dishes }: Props) {
   const clearInput = useComputed(() => dishName.value.trim() !== "");
 
   const handleSearch = async () => {
+    const response = await fetch("/api/dish/availability", {
+      method: "POST",
+      body: JSON.stringify({
+        dishName: dishName.value,
+      } as DishAvailabilitySearch),
+    });
+    const json = await response.json();
+    console.log(json);
   };
 
   const handleInput = (event: ChangeEvent) => {

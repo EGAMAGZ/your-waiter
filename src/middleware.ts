@@ -104,6 +104,7 @@ async function profile(context: APIContext, next: MiddlewareNext) {
   if (PUBLIC_URLS.includes(context.url.pathname)) {
     return await next();
   }
+
   const userId = (await supabase.auth.getUser()).data.user?.id;
 
   if (!userId) {
@@ -152,6 +153,9 @@ function accessControl(context: APIContext, next: MiddlewareNext) {
   // At this point, the user is has an active and valid session so, if the user navigates to sign-in, they will be redirected to HOME_URL
   if (context.url.pathname === SIGN_IN_URL) return next();
   if (PUBLIC_URLS.includes(context.url.pathname)) return next();
+
+  // At this point, the user is has an active and valid session so, they can request any API endpoint 
+  if (context.url.pathname.startsWith("/api/")) return next();
 
   // If the user (with active and valid session) navigates to HOME_URL, they will access to it
   if (context.url.pathname === HOME_URL) return next();
