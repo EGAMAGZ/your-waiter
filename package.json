@@ -1,14 +1,14 @@
 {
   "name": "your-waiter",
   "type": "module",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
     "build": "astro check && astro build",
     "preview": "deno run --allow-net --allow-read --allow-env ./dist/server/entry.mjs",
     "astro": "astro",
-    "update-types": "npx supabase gen types --lang=typescript --project-id \"$PROJECT_REF\" --schema public > src/util/database.types.ts"
+    "update-types": "npx supabase gen types --lang=typescript --project-id \"$PROJECT_REF\" --schema public"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.3",
