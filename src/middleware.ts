@@ -154,7 +154,7 @@ function accessControl(context: APIContext, next: MiddlewareNext) {
   if (context.url.pathname === SIGN_IN_URL) return next();
   if (PUBLIC_URLS.includes(context.url.pathname)) return next();
 
-  // At this point, the user is has an active and valid session so, they can request any API endpoint 
+  // At this point, the user is has an active and valid session so, they can request any API endpoint
   if (context.url.pathname.startsWith("/api/")) return next();
 
   // If the user (with active and valid session) navigates to HOME_URL, they will access to it

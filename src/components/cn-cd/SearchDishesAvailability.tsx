@@ -18,8 +18,17 @@ export default function SearchDishesAvailability({ dishes }: Props) {
         dishName: dishName.value,
       } as DishAvailabilitySearch),
     });
-    const json = await response.json();
-    console.log(json);
+
+    const { data, error } = await response.json() as ApiResponse<
+      DishAvailability[]
+    >;
+
+    if (error) {
+      console.log(error);
+      return;
+    }
+
+    dishes.value = data;
   };
 
   const handleInput = (event: ChangeEvent) => {
@@ -32,7 +41,7 @@ export default function SearchDishesAvailability({ dishes }: Props) {
 
   return (
     <div class="join">
-      <label class="input input-bordered flex items-center gap-2 max-w-lg w-full">
+      <label class="input input-bordered flex items-center gap-2 max-w-2xl w-full">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="24"
