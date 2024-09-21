@@ -16,7 +16,7 @@ const { pathname } = Astro.url;
 		<ul class="menu menu-horizontal px-1">
 			{navigationOptions.map((option: NavigationOption) => (
 				<li>
-					<a href=`${option.path}` class=`${option.path === pathname ? "active": ""}`>{option.name}</a>
+					<a href=`${option.path}` class=`${pathname.startsWith(option.path) ? "active": ""}`>{option.name}</a>
 				</li>
 			))}
 		</ul>
