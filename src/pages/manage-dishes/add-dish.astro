@@ -28,35 +28,38 @@ if (Astro.request.method === "POST") {
 			},
 		]).select();
 
+		try {
+			const { data, error:dishError } = await dishQuery;
+			if (dishError) {
+				console.log(dishError);
+			} else {
+				const newDishData: QueryData<typeof dishQuery> = data;
+				const idNewDish = newDishData[0].id_platillo
 
-		const { data, error:dishError } = await dishQuery;
+				if(ingredients && ingredients.length > 0) {
+					const inserts = ingredients.map(ingredient => ({
+						fk_id_ingrediente: ingredient,
+						fk_id_platillo: idNewDish
+					}));
 
-		if (dishError) {
-			console.log(dishError);
+					const ingredientsQuery = supabase
+						.from("Incluye")
+						.insert(inserts);
+					try {
+						await ingredientsQuery;
+					} catch (error) {
+						Astro.locals.serverError = "Error al registrar ingredientes extras del platillo"
+					}
+				}
 
-		}
-		const newDishData: QueryData<typeof dishQuery> = data;
-		const idNewDish = newDishData[0].id_platillo
-
-		if(ingredients){
-			const inserts = ingredients.map(ingredient => ({
-				fk_id_ingrediente: ingredient,
-				fk_id_platillo: idNewDish
-			}))
-			const ingredientsQuery = supabase
-				.from("Incluye")
-				.insert(inserts);
-			const {error: ingredientError} = await ingredientsQuery;
-
-			if(ingredientError){
-				console.log(ingredientError);
+				return Astro.redirect("/manage-dishes");
 			}
+		} catch (error) {
+			Astro.locals.serverError = "Error al registrar platillo" 
+			console.log(error);
 		}
-
-		return Astro.redirect("/manage-dishes");
 	} else {
 		formErrors = formatError(parsedData.error) as FormErrors<CreateDish>;
-		console.log(formErrors);
 	}
 }
 ---
@@ -161,3 +164,4 @@ if (Astro.request.method === "POST") {
 		</form>
 	</div>
 </ProfileLayout>
+

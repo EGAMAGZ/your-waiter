@@ -27,11 +27,11 @@ export const DishSchema = z.object({
   quantity: z.coerce.number({
     invalid_type_error: "Cantidad del platillo debe ser número",
     required_error: "Cantidad del platillo es requerido",
-  }).nonnegative({
-    message: "Debe ser postivo la cantidad del platillo",
+  }).positive({
+    message: "Cantidad del platillo debse ser mayor a 0",
   }).safe({
     message: "Cantidad del platilla es un valor muy grande",
-  }).default(0),
+  }),
   price: z.coerce.number({
     invalid_type_error: "Precio del platillo debe ser número",
     required_error: "Precio del platillo es requerido",

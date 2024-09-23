@@ -24,7 +24,7 @@ export const IngredientSchema = z.object({
     message: "Debe ser postivo la cantidad del platillo",
   }).safe({
     message: "Cantidad del platilla es un valor muy grande",
-  }).default(0),
+  }),
   price: z.coerce.number({
     invalid_type_error: "Precio del platillo debe ser número",
     required_error: "Precio del platillo es requerido",
@@ -34,6 +34,12 @@ export const IngredientSchema = z.object({
 });
 
 export type Ingredient = z.infer<typeof IngredientSchema>;
+
+export const CreateIngredientSchema = IngredientSchema.omit({
+  id: true,
+});
+
+export type CreateIngredient = z.infer<typeof CreateIngredientSchema>;
 
 export const IngredientSearchSchema = z.object({
   name: z.string({
