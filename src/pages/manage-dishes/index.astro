@@ -10,7 +10,9 @@ const TITLE = "Gestión de platillos e ingredientes"
 	<div class="flex flex-col gap-4 px-4">
 
 		<h1 class="text-center text-5xl font-bold mt-8 mb-4">{TITLE}</h1>
+		<h2 class="text-3xl font-semibold">Platillos</h2>
 		<DishesTable client:idle />
+		<h2 class="text-3xl font-semibold">Ingredientes extra</h2>
 		<IngredientsTable client:idle />
 		<div class="flex flex-row justify-end">
 			<a href="/" class="btn btn-neutral">Regresar</a>

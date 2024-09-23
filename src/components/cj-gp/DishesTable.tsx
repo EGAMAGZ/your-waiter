@@ -87,7 +87,10 @@ export default function DishesTables() {
                 </td>
 
                 <td>
-                  <a href={`/manage-dishes/edit-dish/${dish.id}`} class="btn btn-ghost">
+                  <a
+                    href={`/manage-dishes/edit-dish/${dish.id}`}
+                    class="btn btn-ghost"
+                  >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="24"

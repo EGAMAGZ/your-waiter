@@ -171,17 +171,17 @@ export type Database = {
       }
       Mesa: {
         Row: {
-          fk_id_edo_mesa: number | null
+          fk_id_edo_mesa: number
           id_mesa: number
           nu_mesa: number
         }
         Insert: {
-          fk_id_edo_mesa?: number | null
+          fk_id_edo_mesa?: number
           id_mesa?: number
           nu_mesa: number
         }
         Update: {
-          fk_id_edo_mesa?: number | null
+          fk_id_edo_mesa?: number
           id_mesa?: number
           nu_mesa?: number
         }
@@ -402,4 +402,4 @@ export type Enums<
   ? Database[PublicEnumNameOrOptions["schema"]]["Enums"][EnumName]
   : PublicEnumNameOrOptions extends keyof PublicSchema["Enums"]
     ? PublicSchema["Enums"][PublicEnumNameOrOptions]
-    : never
+    : never   : never
