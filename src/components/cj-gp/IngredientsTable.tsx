@@ -96,7 +96,10 @@ export default function IngredientsTable() {
                 </td>
 
                 <td>
-                  <button class="btn btn-ghost">
+                  <a
+                    href={`/manage-dishes/edit-ingredient/${ingredient.id}`}
+                    class="btn btn-ghost"
+                  >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="24"
@@ -114,7 +117,7 @@ export default function IngredientsTable() {
                       <path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" />
                       <path d="M16 5l3 3" />
                     </svg>
-                  </button>
+                  </a>
                 </td>
 
                 <td>

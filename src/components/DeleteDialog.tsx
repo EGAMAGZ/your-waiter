@@ -28,7 +28,7 @@ export default function DeleteDialog(props: Props) {
     });
 
     const { data, error, message } = await response.json() as ApiResponse<
-      string
+      number
     >;
 
     if (error) {

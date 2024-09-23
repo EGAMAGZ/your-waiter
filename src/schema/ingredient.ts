@@ -1,4 +1,5 @@
 import { z } from "zod";
+import type { UpdateDishSchema } from "./dish";
 
 export const IngredientSchema = z.object({
   id: z.number({
@@ -40,6 +41,12 @@ export const CreateIngredientSchema = IngredientSchema.omit({
 });
 
 export type CreateIngredient = z.infer<typeof CreateIngredientSchema>;
+
+export const UpdateIngredientSchema = IngredientSchema.omit({
+  id: true,
+});
+
+export type UpdateIngredient = z.infer<typeof UpdateDishSchema>;
 
 export const IngredientSearchSchema = z.object({
   name: z.string({

@@ -48,6 +48,12 @@ export const CreateDishSchema = DishSchema.omit({
 
 export type CreateDish = z.infer<typeof CreateDishSchema>;
 
+export const UpdateDishSchema = DishSchema.omit({
+  id: true,
+});
+
+export type UpdateDish = z.infer<typeof UpdateDishSchema>;
+
 const DishAvailability = DishSchema.pick({
   name: true,
   quantity: true,
