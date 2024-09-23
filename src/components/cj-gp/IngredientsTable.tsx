@@ -30,7 +30,10 @@ export default function IngredientsTable() {
       <div class="flex flex-row justify-between">
         <SearchIngredients ingredients={ingredients} />
 
-        <a href="/manage-dishes/add-ingredient" class="btn btn-circle btn-secondary">
+        <a
+          href="/manage-dishes/add-ingredient"
+          class="btn btn-circle btn-secondary"
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"
