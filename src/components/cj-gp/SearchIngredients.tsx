@@ -1,40 +1,40 @@
 import type { ApiResponse } from "@/schema/api-response";
-import type { Dish, DishAvailability, DishSearch } from "@/schema/dish";
-import { Signal, useComputed, useSignal } from "@preact/signals";
+import type { Ingredient, IngredientSearch } from "@/schema/ingredient";
+import { type Signal, useComputed, useSignal } from "@preact/signals";
 import type { ChangeEvent } from "preact/compat";
 
 interface Props {
-  dishes: Signal<Dish[]>;
+  ingredients: Signal<Ingredient[]>;
 }
 
-export default function SearchDishesAvailability({ dishes }: Props) {
-  const dishName = useSignal<string>("");
-  const clearInput = useComputed(() => dishName.value.trim() !== "");
+export default function SearchIngredients({ ingredients }: Props) {
+  const ingredientName = useSignal("");
+  const clearInput = useComputed(() => ingredientName.value.trim() !== "");
 
   const handleSearch = async () => {
     const searchParams = new URLSearchParams();
+    searchParams.set("name", ingredientName.value);
 
-    searchParams.set("name", dishName.value);
-    const response = await fetch(`/api/dish/search?${searchParams.toString()}`);
+    const response = await fetch(
+      `/api/ingredient/search?${searchParams.toString()}`,
+    );
 
-    const { data, error } = await response.json() as ApiResponse<
-      Dish[]
-    >;
+    const { data, error } = await response.json() as ApiResponse<Ingredient[]>;
 
     if (error) {
       console.log(error);
       return;
     }
 
-    dishes.value = data;
+    ingredients.value = data;
   };
 
   const handleInput = (event: ChangeEvent) => {
-    dishName.value = (event.target as HTMLInputElement).value;
+    ingredientName.value = (event.target as HTMLInputElement).value;
   };
 
   const handleClear = () => {
-    dishName.value = "";
+    ingredientName.value = "";
   };
 
   return (
@@ -58,9 +58,9 @@ export default function SearchDishesAvailability({ dishes }: Props) {
         </svg>
         <input
           type="text"
-          name="dishName"
+          name="ingredientName"
           placeholder="Buscar platillo"
-          value={dishName}
+          value={ingredientName}
           onInput={handleInput}
           class="grow"
         />

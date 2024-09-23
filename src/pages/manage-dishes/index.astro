@@ -1,0 +1,19 @@
+---
+import ProfileLayout from "@/layouts/ProfileLayout.astro";
+import DishesTable from "@/components/cj-gp/DishesTable";
+import IngredientsTable from "@/components/cj-gp/IngredientsTable";
+
+const TITLE = "Gestión de platillos e ingredientes"
+---
+
+<ProfileLayout tile={TITLE}>
+	<div class="flex flex-col gap-4 px-4">
+
+		<h1 class="text-center text-5xl font-bold mt-8 mb-4">{TITLE}</h1>
+		<DishesTable client:idle />
+		<IngredientsTable client:idle />
+		<div class="flex flex-row justify-end">
+			<a href="/" class="btn btn-neutral">Regresar</a>
+		</div>
+	</div>
+</ProfileLayout>

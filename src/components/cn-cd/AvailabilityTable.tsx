@@ -1,17 +1,17 @@
-import type { DishAvailability } from "@/schema/dish";
+import type { Dish } from "@/schema/dish";
 import { useSignal, useSignalEffect } from "@preact/signals";
 import SearchDishesAvailability from "./SearchDishesAvailability";
 import type { ApiResponse } from "@/schema/api-response";
 
 export default function AvailabilityTable() {
-  const dishes = useSignal<DishAvailability[]>([]);
+  const dishes = useSignal<Dish[]>([]);
 
   useSignalEffect(() => {
     const getAllDishes = async () => {
-      const response = await fetch("/api/dish/availability");
+      const response = await fetch("/api/dish/search");
 
       const { data, error } = await response.json() as ApiResponse<
-        DishAvailability[]
+        Dish[]
       >;
 
       if (error) {
@@ -33,7 +33,7 @@ export default function AvailabilityTable() {
         <table className="table table-zebra table-pin-cols">
           <thead>
             <tr>
-              <th class="max-w-14">Cantidad disponible</th>
+              <th>Cantidad disponible</th>
               <th>Platillo</th>
             </tr>
           </thead>
