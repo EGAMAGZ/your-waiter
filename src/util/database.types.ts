@@ -237,24 +237,24 @@ export type Database = {
       Platillo: {
         Row: {
           id_platillo: number
-          nu_cantidad: number | null
-          nu_precio: number | null
+          nu_cantidad: number
+          nu_precio: number
           txt_creado: string | null
-          txt_nombre: string | null
+          txt_nombre: string
         }
         Insert: {
           id_platillo?: number
-          nu_cantidad?: number | null
-          nu_precio?: number | null
+          nu_cantidad: number
+          nu_precio: number
           txt_creado?: string | null
-          txt_nombre?: string | null
+          txt_nombre: string
         }
         Update: {
           id_platillo?: number
-          nu_cantidad?: number | null
-          nu_precio?: number | null
+          nu_cantidad?: number
+          nu_precio?: number
           txt_creado?: string | null
-          txt_nombre?: string | null
+          txt_nombre?: string
         }
         Relationships: []
       }
