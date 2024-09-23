@@ -12,10 +12,12 @@ export default function SearchIngredients({ ingredients }: Props) {
   const clearInput = useComputed(() => ingredientName.value.trim() !== "");
 
   const handleSearch = async () => {
-	  const searchParams = new URLSearchParams();
-	  searchParams.set("name", ingredientName.value);
+    const searchParams = new URLSearchParams();
+    searchParams.set("name", ingredientName.value);
 
-    const response = await fetch(`/api/ingredient/search?${searchParams.toString()}`);
+    const response = await fetch(
+      `/api/ingredient/search?${searchParams.toString()}`,
+    );
 
     const { data, error } = await response.json() as ApiResponse<Ingredient[]>;
 
