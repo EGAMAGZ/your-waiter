@@ -1,0 +1,185 @@
+---
+import ProfileLayout from "@/layouts/ProfileLayout.astro";
+import { formatError, type FormErrors } from "@/util/format-error";
+import {
+	UpdateIngredientSchema,
+	type Ingredient,
+	type UpdateIngredient,
+} from "@/schema/ingredient";
+import { supabase } from "@/lib/supabase";
+import { z } from "zod";
+
+const ingredientId = z.coerce.number({
+	required_error: "Id de ingrediente es requerido",
+	invalid_type_error: "Id de ingrediente debe ser número",
+})
+	.positive({
+		message: "Id de ingrediente debe ser mayor a 0",
+	})
+	.safeParse(Astro.params.id);
+
+let ingredient: Ingredient | null = null;
+let formErrors: FormErrors<UpdateIngredient> | undefined;
+
+if (ingredientId.success) {
+	const id = ingredientId.data;
+
+	if (Astro.request.method === "POST") {
+		const formData = await Astro.request.formData();
+
+		const parsedIngredientData = UpdateIngredientSchema.safeParse(
+			Object.fromEntries(formData.entries()),
+		);
+
+		if (parsedIngredientData.success) {
+			const { name, price, quantity } = parsedIngredientData.data;
+
+			const updateIngredientQuery = supabase
+				.from("Ingrediente Extra")
+				.update({
+					txt_nombre: name,
+					nu_precio: price,
+					nu_cantidad: quantity,
+				})
+				.eq("id_ingrediente", id)
+				.select();
+
+			try {
+				await updateIngredientQuery;
+
+				return Astro.redirect("/manage-dishes");
+			} catch {
+				Astro.locals.serverError = "Error al actualizar ingrediente";
+			}
+		} else {
+			formErrors = formatError(parsedIngredientData.error);
+		}
+	}
+
+	const getIngredientQuery = supabase
+		.from("Ingrediente Extra")
+		.select()
+		.eq("id_ingrediente", id)
+		.single();
+
+	const { data, error } = await getIngredientQuery;
+
+	if (!error) {
+		ingredient = {
+			id,
+			name: data.txt_nombre,
+			quantity: data.nu_cantidad,
+			price: data.nu_precio,
+		};
+	} else {
+		Astro.locals.serverError = "Ingrediente no existe";
+	}
+}
+---
+
+<ProfileLayout title="Registrar nuevo ingrediente extra">
+	<h1 class="text-center text-5xl font-bold mt-8 mb-4">
+		Registrar nuevo ingrediente extra
+	</h1>
+	<div class="container mx-auto">
+		<form
+			method="post"
+			class="flex flex-col gap-4"
+		>
+			<label class="form-control">
+				<div class="label">
+					<span class="label-text">Nombre del ingrediente *</span>
+				</div>
+				<input
+					type="text"
+					class="input input-bordered"
+					name="name"
+					value={ingredient?.name || ""}
+				/>
+				{
+					formErrors?.name && (
+						<div class="label">
+							<span class="label-text-alt text-red-500">
+								{formErrors.name}
+							</span>
+						</div>
+					)
+				}
+			</label>
+
+			<label class="form-control">
+				<div class="label">
+					<span class="label-text"
+						>Cantidad de ingredientes que se tienen*</span
+					>
+				</div>
+				<input
+					type="number"
+					class="input input-bordered"
+					placeholder="0"
+					name="quantity"
+					value={ingredient?.quantity || ""}
+				/>
+				{
+					formErrors?.quantity && (
+						<div class="label">
+							<span class="label-text-alt text-red-500">
+								{formErrors.quantity}
+							</span>
+						</div>
+					)
+				}
+			</label>
+
+			<label class="form-control">
+				<div class="label">
+					<span class="label-text"
+						>Precio unitario del ingrediente *</span
+					>
+				</div>
+
+				<div class="input input-bordered flex items-center gap-2">
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						width="24"
+						height="24"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						class="icon icon-tabler icons-tabler-outline icon-tabler-currency-dollar"
+						><path stroke="none" d="M0 0h24v24H0z" fill="none"
+						></path><path
+							d="M16.7 8a3 3 0 0 0 -2.7 -2h-4a3 3 0 0 0 0 6h4a3 3 0 0 1 0 6h-4a3 3 0 0 1 -2.7 -2"
+						></path><path d="M12 3v3m0 12v3"></path></svg
+					>
+					<input
+						type="number"
+						class="grow"
+						placeholder="0"
+						name="price"
+						value={ingredient?.price || ""}
+					/>
+				</div>
+
+				{
+					formErrors?.price && (
+						<div class="label">
+							<span class="label-text-alt text-red-500">
+								{formErrors.price}
+							</span>
+						</div>
+					)
+				}
+			</label>
+			<div class="flex justify-end gap-2">
+				<a href="/manage-dishes" class="btn btn-ghost"> Cancelar </a>
+				<button class="btn btn-primary" disabled={ingredient === null}>
+					Aceptar
+				</button>
+			</div>
+		</form>
+	</div>
+</ProfileLayout>

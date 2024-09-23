@@ -148,22 +148,22 @@ export type Database = {
       "Ingrediente Extra": {
         Row: {
           id_ingrediente: number
-          nu_cantidad: number | null
-          nu_precio: number | null
+          nu_cantidad: number
+          nu_precio: number
           txt_creado: string | null
           txt_nombre: string
         }
         Insert: {
           id_ingrediente?: number
-          nu_cantidad?: number | null
-          nu_precio?: number | null
+          nu_cantidad: number
+          nu_precio: number
           txt_creado?: string | null
           txt_nombre: string
         }
         Update: {
           id_ingrediente?: number
-          nu_cantidad?: number | null
-          nu_precio?: number | null
+          nu_cantidad?: number
+          nu_precio?: number
           txt_creado?: string | null
           txt_nombre?: string
         }
@@ -237,24 +237,24 @@ export type Database = {
       Platillo: {
         Row: {
           id_platillo: number
-          nu_cantidad: number | null
-          nu_precio: number | null
+          nu_cantidad: number
+          nu_precio: number
           txt_creado: string | null
-          txt_nombre: string | null
+          txt_nombre: string
         }
         Insert: {
           id_platillo?: number
-          nu_cantidad?: number | null
-          nu_precio?: number | null
+          nu_cantidad: number
+          nu_precio: number
           txt_creado?: string | null
-          txt_nombre?: string | null
+          txt_nombre: string
         }
         Update: {
           id_platillo?: number
-          nu_cantidad?: number | null
-          nu_precio?: number | null
+          nu_cantidad?: number
+          nu_precio?: number
           txt_creado?: string | null
-          txt_nombre?: string | null
+          txt_nombre?: string
         }
         Relationships: []
       }
@@ -270,21 +270,6 @@ export type Database = {
         Update: {
           id_rol?: number
           txt_nombre?: string
-        }
-        Relationships: []
-      }
-      Role: {
-        Row: {
-          id_role: number
-          txt_name: string
-        }
-        Insert: {
-          id_role?: number
-          txt_name: string
-        }
-        Update: {
-          id_role?: number
-          txt_name?: string
         }
         Relationships: []
       }
@@ -315,39 +300,6 @@ export type Database = {
           {
             foreignKeyName: "Trabajador_fk_id_usuario_fkey"
             columns: ["fk_id_usuario"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      Worker: {
-        Row: {
-          id_role: number | null
-          id_user: string | null
-          id_worker: number
-        }
-        Insert: {
-          id_role?: number | null
-          id_user?: string | null
-          id_worker?: number
-        }
-        Update: {
-          id_role?: number | null
-          id_user?: string | null
-          id_worker?: number
-        }
-        Relationships: [
-          {
-            foreignKeyName: "Worker_id_role_fkey"
-            columns: ["id_role"]
-            isOneToOne: false
-            referencedRelation: "Role"
-            referencedColumns: ["id_role"]
-          },
-          {
-            foreignKeyName: "Worker_id_user_fkey"
-            columns: ["id_user"]
             isOneToOne: false
             referencedRelation: "users"
             referencedColumns: ["id"]
