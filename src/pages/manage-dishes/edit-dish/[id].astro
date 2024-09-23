@@ -3,6 +3,7 @@ import IngredientSelector from "@/components/IngredientSelector";
 import ProfileLayout from "@/layouts/ProfileLayout.astro";
 import { supabase } from "@/lib/supabase";
 import { CreateDishSchema, type CreateDish, type Dish } from "@/schema/dish";
+import type { Ingredient } from "@/schema/ingredient";
 import { formatError, type FormErrors } from "@/util/format-error";
 import type { QueryData } from "@supabase/supabase-js";
 import { z } from "zod";
@@ -20,7 +21,7 @@ const dishId = z.coerce
     .safeParse(Astro.params.id);
 
 let dish: Dish | null = null;
-let ingredients: number[] = [];
+let ingredients: Ingredient[] = [];
 
 if (dishId.success) {
     if (Astro.request.method === "POST") {
@@ -40,13 +41,14 @@ if (dishId.success) {
             try {
                 const dishQuery = supabase
                     .from("Platillo")
-                    .insert([
+                    .update(
                         {
                             nu_precio: price,
                             nu_cantidad: quantity,
                             txt_nombre: name,
                         },
-                    ])
+                    )
+                    .eq("id_platillo", dishId.data)
                     .select();
 
                 const { data, error } = await dishQuery;
@@ -54,7 +56,7 @@ if (dishId.success) {
                 if (error) {
                     Astro.locals.serverError = "Error al registrar platillo";
                 } else {
-                    const newDishData: QueryData<typeof dishQuery> = data;
+                    /*const newDishData: QueryData<typeof dishQuery> = data;
                     const idNewDish = newDishData[0].id_platillo;
 
                     if (ingredients && ingredients.length > 0) {
@@ -68,7 +70,7 @@ if (dishId.success) {
                             .insert(inserts);
 
                         await ingredientsQuery;
-                    }
+                    }*/
 
                     return Astro.redirect("/manage-dishes");
                 }
@@ -80,11 +82,7 @@ if (dishId.success) {
 
     const getDishQuery = supabase
         .from("Platillo")
-        .select(`
-            txt_nombre,
-            nu_precio,
-            nu_cantidad,
-        `)
+        .select(`*`)
         .eq("id_platillo", dishId.data)
         .single();
 
@@ -96,10 +94,11 @@ if (dishId.success) {
             name: data.txt_nombre,
             price: data.nu_precio,
             quantity: data.nu_cantidad,
-            ingredients,
         };
+
     } else {
-        Astro.locals.serverError = "Error al obtener platillo";
+        console.log(error)
+        Astro.locals.serverError = "Platillo no existe";
     }
 }
 ---
@@ -111,14 +110,13 @@ if (dishId.success) {
     <div class="container mx-auto">
         <form
             method="POST"
-            action="/manage-dishes/add-dish"
             class="flex flex-col gap-4"
         >
             <label class="form-control">
                 <div class="label">
                     <span class="label-text">Nombre del platillo *</span>
                 </div>
-                <input type="text" class="input input-bordered" name="name" />
+                <input type="text" class="input input-bordered" name="name" value={dish?.name || ""} />
                 {
                     formErrors?.name && (
                         <div class="label">
@@ -130,7 +128,7 @@ if (dishId.success) {
                 }
             </label>
 
-            <IngredientSelector client:idle />
+           <!-- <IngredientSelector client:idle initialIngredients={ingredients}  /> -->
 
             <label class="form-control">
                 <div class="label">
@@ -143,6 +141,7 @@ if (dishId.success) {
                     class="input input-bordered"
                     placeholder="0"
                     name="quantity"
+                    value={dish?.quantity || ""}
                 />
                 {
                     formErrors?.quantity && (
@@ -184,6 +183,7 @@ if (dishId.success) {
                         class="grow"
                         placeholder="0"
                         name="price"
+                        value={dish?.price || ""}
                     />
                 </div>
 
@@ -199,7 +199,7 @@ if (dishId.success) {
             </label>
             <div class="flex justify-end gap-2">
                 <a href="/manage-dishes" class="btn btn-ghost"> Cancelar </a>
-                <button class="btn btn-primary"> Aceptar </button>
+                <button class="btn btn-primary" disabled={dish === null}> Aceptar </button>
             </div>
         </form>
     </div>

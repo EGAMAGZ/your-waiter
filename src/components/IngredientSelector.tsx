@@ -5,11 +5,11 @@ import AddIngredientDialog from "./AddIngredientDialog";
 import type { Ingredient } from "@/schema/ingredient";
 
 interface Props {
-  dishesId?: number[];
+  initialIngredients?: Ingredient[];
 }
 
-export default function IngredientSelector({ dishesId }: Props) {
-  const ingredients = useSignal<Ingredient[]>([]);
+export default function IngredientSelector({ initialIngredients }: Props) {
+  const ingredients = useSignal<Ingredient[]>( initialIngredients|| []);
 
   const addDishDialogRef = useRef<HTMLDialogElement>(null);
 
