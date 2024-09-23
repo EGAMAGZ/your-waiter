@@ -12,12 +12,9 @@ export default function SearchDishes({ dishes }: Props) {
   const clearInput = useComputed(() => dishName.value.trim() !== "");
 
   const handleSearch = async () => {
-    const response = await fetch("/api/dish/search", {
-      method: "POST",
-      body: JSON.stringify({
-        dishName: dishName.value,
-      } as DishSearch),
-    });
+    const searchParams = new URLSearchParams();
+    searchParams.set("name", dishName.value);
+    const response = await fetch(`/api/dish/search?${searchParams.toString()}`);
 
     const { data, error } = await response.json() as ApiResponse<Dish[]>;
 

@@ -1,13 +1,14 @@
 import { supabase } from "@/lib/supabase";
 import type { ApiResponse } from "@/schema/api-response";
-import { type Dish, type DishSearch, DishSearchSchema } from "@/schema/dish";
+import { type Dish, DishSearchSchema } from "@/schema/dish";
 import type { QueryData } from "@supabase/supabase-js";
 import type { APIRoute } from "astro";
 
-export const POST: APIRoute = async ({ request }) => {
-  const body = await request.json() as DishSearch;
+export const GET: APIRoute = async ({ request }) => {
+  const url = new URL(request.url);
+
   const parsedData = DishSearchSchema.safeParse({
-    dishName: body.dishName,
+    name: url.searchParams.get("name"),
   });
 
   if (!parsedData.success) {
@@ -21,52 +22,12 @@ export const POST: APIRoute = async ({ request }) => {
     });
   }
 
-  const { dishName } = parsedData.data;
+  const { name } = parsedData.data;
 
   const dishesQuery = supabase
     .from("Platillo")
-    .select(
-      "id_platillo,txt_nombre,nu_precio",
-    )
-    .ilike("txt_nombre", `%${dishName}%`);
-
-  const { data, error: dishesError } = await dishesQuery;
-
-  if (dishesError) {
-    const response: ApiResponse = {
-      message: dishesError.message,
-      error: "server_error",
-    };
-
-    return Response.json(response, {
-      status: 500,
-    });
-  }
-
-  const dishesData: QueryData<typeof dishesQuery> = data;
-
-  const dishes = dishesData.map((dish) => ({
-    id: dish.id_platillo,
-    name: dish.txt_nombre,
-    price: dish.nu_precio,
-  } as Dish));
-
-  const response: ApiResponse<Dish[]> = {
-    data: dishes,
-    message: "Successfully found dishes information",
-  };
-
-  return Response.json(response, {
-    status: 200,
-  });
-};
-
-export const GET: APIRoute = async () => {
-  const dishesQuery = supabase
-    .from("Platillo")
-    .select(
-      "id_platillo,txt_nombre,nu_precio",
-    );
+    .select("*")
+    .ilike("txt_nombre", `%${name || ""}%`);
 
   const { data, error: dishesError } = await dishesQuery;
 
@@ -87,6 +48,7 @@ export const GET: APIRoute = async () => {
     id: dish.id_platillo,
     name: dish.txt_nombre,
     price: dish.nu_precio,
+    quantity: dish.nu_cantidad,
   } as Dish));
 
   const response: ApiResponse<Dish[]> = {

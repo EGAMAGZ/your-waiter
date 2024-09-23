@@ -1,22 +1,5 @@
 import { z } from "zod";
 
-export const DishSearchSchema = z.object({
-  dishName: z.string({
-    required_error: "Nombre de platillo es requerido",
-    invalid_type_error: "Nombre de platillo debe ser texto plano",
-  }).trim(),
-});
-
-export type DishSearch = z.infer<
-  typeof DishSearchSchema
->;
-
-export type Dish = {
-  id: number;
-  name: string;
-  price: number;
-};
-
 export const DishSchema = z.object({
   id: z.number({
     required_error: "Id de platillo es requerido",
@@ -33,7 +16,7 @@ export const DishSchema = z.object({
     invalid_type_error: "Nombre de platillo debe ser texto plano",
   }).min(1, {
     message: "Nombre de platillo no puede estar vacio",
-  }),
+  }).trim(),
   ingredients: z.coerce.number({
     required_error: "Id ingrediente es requerido",
     invalid_type_error: "Id de ingrediente deve ser positivo",
@@ -59,6 +42,8 @@ export const DishSchema = z.object({
   }),
 });
 
+export type Dish = z.infer<typeof DishSchema>;
+
 export const CreateDishSchema = DishSchema.omit({
   id: true,
 });
@@ -71,3 +56,14 @@ const DishAvailability = DishSchema.pick({
 });
 
 export type DishAvailability = z.infer<typeof DishAvailability>;
+
+export const DishSearchSchema = z.object({
+  name: z.string({
+    required_error: "Nombre de platillo es requerido",
+    invalid_type_error: "Nombre de platillo debe ser texto plano",
+  }).nullish(),
+});
+
+export type DishSearch = z.infer<
+  typeof DishSearchSchema
+>;

@@ -2,6 +2,7 @@ import { supabase } from "@/lib/supabase";
 import type { ApiResponse } from "@/schema/api-response";
 import {
   type Ingredient,
+  IngredientSchema,
   type IngredientSearch,
   IngredientSearchSchema,
 } from "@/schema/ingredient";
@@ -63,10 +64,29 @@ export const POST: APIRoute = async ({ request }) => {
   });
 };
 
-export const GET: APIRoute = async () => {
+export const GET: APIRoute = async ({ request }) => {
+  const url = new URL(request.url);
+
+  const parsedData = IngredientSearchSchema.safeParse({
+    name: url.searchParams.get("name"),
+  });
+
+  if (!parsedData.success) {
+    const response: ApiResponse = {
+      message: parsedData.error.format(),
+      error: "validation_error",
+    };
+    return Response.json(response, {
+      status: 400,
+    });
+  }
+
+  const { name } = parsedData.data;
+
   const ingredientsQuery = supabase
     .from("Ingrediente Extra")
-    .select("id_ingrediente,txt_nombre,nu_precio");
+    .select("*")
+    .ilike("txt_nombre", `%${name || ""}%`);
 
   const { data, error: ingredientError } = await ingredientsQuery;
 
@@ -87,6 +107,7 @@ export const GET: APIRoute = async () => {
     id: ingredient.id_ingrediente,
     name: ingredient.txt_nombre,
     price: ingredient.nu_precio,
+    quantity: ingredient.nu_cantidad
   } as Ingredient));
 
   const response: ApiResponse<Ingredient[]> = {

@@ -3,6 +3,10 @@ import { useSignal, useSignalEffect } from "@preact/signals";
 import SearchDishes from "./SearchDishes";
 import type { ApiResponse } from "@/schema/api-response";
 
+interface Props {
+  dishes: Dish[];
+}
+
 export default function DishesTables() {
   const dishes = useSignal<Dish[]>([]);
 
