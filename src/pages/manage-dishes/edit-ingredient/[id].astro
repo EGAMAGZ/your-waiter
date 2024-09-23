@@ -9,74 +9,64 @@ import {
 import { supabase } from "@/lib/supabase";
 import { z } from "zod";
 
-let formErrors: FormErrors<UpdateIngredient> | undefined;
-
-
-let ingredient: Ingredient | null = null;
-let idIngredient: number | null = null;
-
-const { id } = Astro.params;
-
-const parsedIdData = z.coerce
-	.number({
-		required_error: "Id de ingrediente es requerido",
-		invalid_type_error: "Id de ingrediente debe ser número",
-	})
+const ingredientId = z.coerce.number({
+	required_error: "Id de ingrediente es requerido",
+	invalid_type_error: "Id de ingrediente debe ser número",
+})
 	.positive({
 		message: "Id de ingrediente debe ser mayor a 0",
 	})
-	.safeParse(id);
+	.safeParse(Astro.params.id);
 
-if(parsedIdData.success){
-	idIngredient = parsedIdData.data;
-}
+let ingredient: Ingredient | null = null;
+let formErrors: FormErrors<UpdateIngredient> | undefined;
 
-if (Astro.request.method === "POST") {
-	const formData = await Astro.request.formData();
+if (ingredientId.success) {
+	const id = ingredientId.data;
 
-	const parsedIngredientData = UpdateIngredientSchema.safeParse(
-		Object.fromEntries(formData.entries()),
-	);
+	if (Astro.request.method === "POST") {
+		const formData = await Astro.request.formData();
 
-	if (parsedIngredientData.success) {
-		if (idIngredient) {
+		const parsedIngredientData = UpdateIngredientSchema.safeParse(
+			Object.fromEntries(formData.entries()),
+		);
+
+		if (parsedIngredientData.success) {
 			const { name, price, quantity } = parsedIngredientData.data;
 
-			const ingredientQuery = supabase
+			const updateIngredientQuery = supabase
 				.from("Ingrediente Extra")
 				.update({
 					txt_nombre: name,
 					nu_precio: price,
 					nu_cantidad: quantity,
 				})
-				.eq("id_ingrediente", idIngredient)
+				.eq("id_ingrediente", id)
 				.select();
+
 			try {
-				await ingredientQuery;
+				await updateIngredientQuery;
 
 				return Astro.redirect("/manage-dishes");
-			} catch (error) {
-				Astro.locals.serverError = "Error al registrar nuevo platillo";
+			} catch {
+				Astro.locals.serverError = "Error al actualizar ingrediente";
 			}
+		} else {
+			formErrors = formatError(parsedIngredientData.error);
 		}
-	} else {
-		formErrors = formatError(parsedIngredientData.error);
 	}
-}
 
-if (idIngredient) {
-
-	const ingredientQuery = supabase
+	const getIngredientQuery = supabase
 		.from("Ingrediente Extra")
 		.select()
-		.eq("id_ingrediente", idIngredient)
+		.eq("id_ingrediente", id)
 		.single();
 
-	const { data, error } = await ingredientQuery;
+	const { data, error } = await getIngredientQuery;
 
 	if (!error) {
 		ingredient = {
-			id: idIngredient,
+			id,
 			name: data.txt_nombre,
 			quantity: data.nu_cantidad,
 			price: data.nu_precio,
@@ -94,7 +84,6 @@ if (idIngredient) {
 	<div class="container mx-auto">
 		<form
 			method="post"
-			action={`/manage-dishes/edit-ingredient/${idIngredient}`}
 			class="flex flex-col gap-4"
 		>
 			<label class="form-control">

@@ -1,35 +1,34 @@
 ---
-import ProfileLayout from "@/layouts/ProfileLayout.astro"
-import { formatError, type FormErrors } from "@/util/format-error"
-import {CreateIngredientSchema, type CreateIngredient} from "@/schema/ingredient";
+import ProfileLayout from "@/layouts/ProfileLayout.astro";
+import { formatError, type FormErrors } from "@/util/format-error";
+import { CreateIngredientSchema, type CreateIngredient } from "@/schema/ingredient";
 import { supabase } from "@/lib/supabase";
 
 let formErrors: FormErrors<CreateIngredient> | undefined;
 
-if(Astro.request.method === "POST"){
-	const formData= await Astro.request.formData();
+if (Astro.request.method === "POST") {
+	const formData = await Astro.request.formData();
 
-	const parsedData = CreateIngredientSchema.safeParse(Object.fromEntries(formData.entries()))
+	const { data: parsedData, error } = CreateIngredientSchema.safeParse(
+		Object.fromEntries(formData.entries())
+	);
 
-	if(parsedData.success){
-		const { name, price, quantity } = parsedData.data;
+	if (parsedData) {
+		const { name, price, quantity } = parsedData;
 
-		const ingredientQuery = supabase
+		const insertQuery = supabase
 			.from("Ingrediente Extra")
-			.insert([{
-				txt_nombre: name,
-				nu_precio: price,
-				nu_cantidad: quantity
-			}]);
+			.insert([{ txt_nombre: name, nu_precio: price, nu_cantidad: quantity }]);
+
 		try {
-			await ingredientQuery;
+			await insertQuery;
 
 			return Astro.redirect("/manage-dishes");
-		} catch(error){
-			Astro.locals.serverError = "Error al registrar nuevo platillo"		
+		} catch (error) {
+			Astro.locals.serverError = "Error al registrar nuevo ingrediente";
 		}
 	} else {
-		formErrors = formatError(parsedData.error);
+		formErrors = formatError(error);
 	}
 }
 
