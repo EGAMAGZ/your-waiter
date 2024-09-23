@@ -1,5 +1,4 @@
 ---
-import { ViewTransitions } from "astro:transitions"
 import Toasts from '@/components/Toasts.astro';
 
 interface Props {
@@ -25,7 +24,6 @@ if (!title.endsWith("| Your Waiter") && !noAppendTitle) {
         <meta name="viewport" content="width=device-width" />
         <meta name="generator" content={Astro.generator} />
         <title>{title}</title>
-	<ViewTransitions />
     </head>
     <body>
 	    <Toasts errorMessage={serverError} />

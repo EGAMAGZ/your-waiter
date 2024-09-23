@@ -17,15 +17,13 @@ export const DishSchema = z.object({
   }).min(1, {
     message: "Nombre de platillo no puede estar vacio",
   }).trim(),
-  ingredients: z.coerce.number({
-    required_error: "Id ingrediente es requerido",
-    invalid_type_error: "Id de ingrediente deve ser positivo",
-  }).positive({
-    message: "Id de ingrediente debe ser positivo",
-  }).int({
-    message: "Id de ingrediente deber ser entero",
-  }).array()
-    .optional(),
+  ingredients: z.preprocess(
+    (value) => (Array.isArray(value) ? value.map(Number) : [Number(value)]),
+    z.coerce.number({
+      invalid_type_error: "Id de ingrediente debe ser número",
+      required_error: "Id de ingrediente es requerido",
+    }).array(),
+  ).optional(),
   quantity: z.coerce.number({
     invalid_type_error: "Cantidad del platillo debe ser número",
     required_error: "Cantidad del platillo es requerido",
