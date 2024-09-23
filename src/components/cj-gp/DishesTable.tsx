@@ -2,6 +2,7 @@ import type { Dish } from "@/schema/dish";
 import { useSignal, useSignalEffect } from "@preact/signals";
 import SearchDishes from "./SearchDishes";
 import type { ApiResponse } from "@/schema/api-response";
+import DeleteDialog from "../DeleteDialog";
 
 interface Props {
   dishes: Dish[];
@@ -9,6 +10,8 @@ interface Props {
 
 export default function DishesTables() {
   const dishes = useSignal<Dish[]>([]);
+
+  const dishToDelete = useSignal<number | null>(null);
 
   useSignalEffect(() => {
     const getAllDishes = async () => {
@@ -25,8 +28,21 @@ export default function DishesTables() {
     getAllDishes();
   });
 
+  const handleAcceptDelete = () => {
+    dishes.value = dishes.value.filter((dish) =>
+      dish.id !== dishToDelete.value
+    );
+  };
+
   return (
     <div class="flex flex-col gap-2">
+      <DeleteDialog
+        id={dishToDelete}
+        onAccept={handleAcceptDelete}
+        url="/api/dish"
+        title="Elminar platillo"
+        message="¿Estas seguro de eliminar el platillo?"
+      />
       <div class="flex flex-row justify-between">
         <SearchDishes dishes={dishes} />
 
@@ -93,7 +109,12 @@ export default function DishesTables() {
                 </td>
 
                 <td>
-                  <button class="btn btn-ghost">
+                  <button
+                    class="btn btn-ghost"
+                    onClick={() => {
+                      dishToDelete.value = dish.id;
+                    }}
+                  >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="24"

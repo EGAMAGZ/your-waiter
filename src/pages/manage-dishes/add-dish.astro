@@ -18,25 +18,30 @@ if (Astro.request.method === "POST") {
 		quantity: formData.get("quantity"),
 	});
 
-	if (parsedData.success) {
+	if (!parsedData.success) {
+		formErrors = formatError(parsedData.error) as FormErrors<CreateDish>;
+	} else {
 		const { name, ingredients, price, quantity } = parsedData.data;
-		const dishQuery = supabase.from("Platillo").insert([
-			{
-				nu_precio: price,
-				nu_cantidad: quantity,
-				txt_nombre: name,
-			},
-		]).select();
 
 		try {
-			const { data, error:dishError } = await dishQuery;
-			if (dishError) {
-				console.log(dishError);
+			const dishQuery = supabase.from("Platillo").insert([
+				{
+					nu_precio: price,
+					nu_cantidad: quantity,
+					txt_nombre: name,
+				},
+			]).select();
+
+			const { data, error } = await dishQuery;
+
+			if (error) {
+				Astro.locals.serverError = "Error al registrar platillo" 
+				console.log(error);
 			} else {
 				const newDishData: QueryData<typeof dishQuery> = data;
 				const idNewDish = newDishData[0].id_platillo
 
-				if(ingredients && ingredients.length > 0) {
+				if (ingredients && ingredients.length > 0) {
 					const inserts = ingredients.map(ingredient => ({
 						fk_id_ingrediente: ingredient,
 						fk_id_platillo: idNewDish
@@ -58,8 +63,6 @@ if (Astro.request.method === "POST") {
 			Astro.locals.serverError = "Error al registrar platillo" 
 			console.log(error);
 		}
-	} else {
-		formErrors = formatError(parsedData.error) as FormErrors<CreateDish>;
 	}
 }
 ---

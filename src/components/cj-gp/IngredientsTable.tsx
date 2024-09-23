@@ -2,9 +2,12 @@ import type { Ingredient } from "@/schema/ingredient";
 import { type Signal, useSignal, useSignalEffect } from "@preact/signals";
 import SearchIngredients from "./SearchIngredients";
 import type { ApiResponse } from "@/schema/api-response";
+import DeleteDialog from "../DeleteDialog";
 
 export default function IngredientsTable() {
   const ingredients = useSignal<Ingredient[]>([]);
+
+  const ingredientToDelete = useSignal<number | null>(null);
 
   useSignalEffect(() => {
     const getAllIngredients = async () => {
@@ -25,11 +28,23 @@ export default function IngredientsTable() {
     getAllIngredients();
   });
 
+  const handleAcceptDelete = () => {
+    ingredients.value = ingredients.value.filter((ingredient) =>
+      ingredient.id !== ingredientToDelete.value
+    );
+  };
+
   return (
     <div class="flex flex-col gap-2">
+      <DeleteDialog
+        id={ingredientToDelete}
+        onAccept={handleAcceptDelete}
+        url="/api/ingredient"
+        title="Eliminar ingrediente"
+        message="¿Estas seguro de eliminar el platillo?"
+      />
       <div class="flex flex-row justify-between">
         <SearchIngredients ingredients={ingredients} />
-
         <a
           href="/manage-dishes/add-ingredient"
           class="btn btn-circle btn-secondary"
@@ -103,7 +118,12 @@ export default function IngredientsTable() {
                 </td>
 
                 <td>
-                  <button class="btn btn-ghost">
+                  <button
+                    class="btn btn-ghost"
+                    onClick={() => {
+                      ingredientToDelete.value = ingredient.id;
+                    }}
+                  >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="24"
