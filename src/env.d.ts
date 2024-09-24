@@ -19,6 +19,9 @@ declare namespace App {
       path: string;
       name: string;
     }[]; // TODO: FIND A WAY TO USE THE TYPE FROM role.ts
+    worker: {
+      id: number;
+    };
     welcomeTitle: () => string;
     serverError?: string;
   }

@@ -1,0 +1,63 @@
+---
+import ProfileLayout from "@/layouts/ProfileLayout.astro";
+import {z} from "zod";
+import { supabase } from "@/lib/supabase"
+import { tableStatus } from "@/util/table";
+import type { Dish } from "@/schema/dish";
+import OrderSelection from "@/components/ms-gm/OrderSelection"
+
+const TITLE = "Pedido";
+
+const tableId = z.coerce.number({
+	required_error:"Id de mesa es requerido",
+	invalid_type_error: "Id de mesa debe ser número"
+}).positive({
+	message:"Id de mesa debe ser mayor a 0"
+}).safeParse(Astro.params.id)
+
+if(tableId.success){
+	const id = tableId.data;
+
+	const startServiceQuery = supabase
+		.from("Mesa")
+		.update({
+			fk_id_edo_mesa: tableStatus.busy
+		})
+		.eq("id_mesa", id);
+
+	const { data, error } = await startServiceQuery;
+
+	if(!error){
+
+	} else {
+		Astro.locals.serverError = "Error al inicializar servicio"
+	}
+}
+
+
+let dishes: Dish[] = [];
+
+const getDishesQuery = supabase
+	.from("Platillo")
+	.select("*");
+
+const { data , error} = await getDishesQuery;
+
+if(!error){
+	dishes = data.map(dish=>({
+		id: dish.id_platillo,
+		name: dish.txt_nombre,
+		price: dish.nu_precio,
+		quantity: dish.nu_cantidad
+	}))
+} else{
+	Astro.locals.serverError = "Error al cargar platillos"
+}
+
+---
+<ProfileLayout title={TITLE}>
+	<div class="flex flex-col gap-4 px-4">
+		<h1 class="text-center text-5xl font-bold mt-8 mb-4">{TITLE}</h1>
+		<OrderSelection client:load dishes={dishes} idTable={tableId!.data as number} />
+	</div>
+</ProfileLayout>

@@ -1,0 +1,35 @@
+---
+import ProfileLayout from "@/layouts/ProfileLayout.astro";
+import { supabase } from "@/lib/supabase";
+import type { Table } from "@/schema/table";
+import { getStatusById, tableStatus,   } from "@/util/table";
+import TableManagement from "@/components/ms-gm/TableManagement"
+
+const TITLE = "Gestionar mesas"
+
+let tables: Table[] = [];
+
+const getTablesOccupied= supabase
+	.from("Mesa")
+	.select("*")
+	.neq("fk_id_edo_mesa", tableStatus.free);
+
+const { data , error} = await getTablesOccupied;
+
+if(!error){
+	tables = data.map(table=>({
+		id: table.id_mesa,
+		status: getStatusById(table.fk_id_edo_mesa),
+		numberTable: table.nu_mesa
+	}))
+} else{
+	Astro.locals.serverError = "Error al cargar mesas"
+}
+
+---
+<ProfileLayout title={TITLE}>
+	<div class="flex flex-col gap-4 px-4">
+		<h1 class="text-center text-5xl font-bold mt-8 mb-4">{TITLE}</h1>
+		<TableManagement client:idle initialTables={tables} />
+	</div>
+</ProfileLayout>
