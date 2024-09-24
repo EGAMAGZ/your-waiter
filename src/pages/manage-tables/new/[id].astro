@@ -3,6 +3,8 @@ import ProfileLayout from "@/layouts/ProfileLayout.astro";
 import {z} from "zod";
 import { supabase } from "@/lib/supabase"
 import { tableStatus } from "@/util/table";
+import type { Dish } from "@/schema/dish";
+import OrderSelection from "@/components/ms-gm/OrderSelection"
 
 const TITLE = "Pedido";
 
@@ -30,8 +32,33 @@ if(tableId.success){
 	} else {
 		Astro.locals.serverError = "Error al inicializar servicio"
 	}
-	
 }
+
+
+let dishes: Dish[] = [];
+
+const getDishesQuery = supabase
+	.from("Platillo")
+	.select("*");
+
+const { data , error} = await getDishesQuery;
+
+if(!error){
+	dishes = data.map(dish=>({
+		id: dish.id_platillo,
+		name: dish.txt_nombre,
+		price: dish.nu_precio,
+		quantity: dish.nu_cantidad
+	}))
+} else{
+	Astro.locals.serverError = "Error al cargar platillos"
+}
+
+
 ---
 <ProfileLayout title={TITLE}>
+	<div class="flex flex-col gap-4 px-4">
+		<h1 class="text-center text-5xl font-bold mt-8 mb-4">{TITLE}</h1>
+		<OrderSelection dishes={dishes} />
+	</div>
 </ProfileLayout>

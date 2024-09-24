@@ -30,7 +30,7 @@ export const GET: APIRoute = async () => {
   }));
 
   const response: ApiResponse<Table[]> = {
-    data:tables,
+    data: tables,
     message: "Available tables found succesfully",
   };
 

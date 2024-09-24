@@ -27,7 +27,7 @@ async function updateTableStatus(
 
 interface Props {
   table: Table;
-  onFree: (id:number) => void;
+  onFree: (id: number) => void;
 }
 
 export default function TableCard({ table, onFree }: Props) {
@@ -40,7 +40,7 @@ export default function TableCard({ table, onFree }: Props) {
           {renderButtons({
             id: table.id,
             status,
-            onFree
+            onFree,
           })}
         </div>
       </div>
@@ -48,7 +48,7 @@ export default function TableCard({ table, onFree }: Props) {
   );
 }
 
-interface RenderButtonsProps{
+interface RenderButtonsProps {
   id: number;
   status: Signal<TableStatus>;
   onFree: (id: number) => void;
@@ -114,7 +114,9 @@ function InProcessButtons(props: ButtonsProps) {
   );
 }
 
-function CompletedButtons(props: ButtonsProps & { onFree: (id:number) => void }) {
+function CompletedButtons(
+  props: ButtonsProps & { onFree: (id: number) => void },
+) {
   const handleResumeService = () => {
     updateTableStatus(props.id, "in_process", (actualStatus) => {
       props.status.value = actualStatus;

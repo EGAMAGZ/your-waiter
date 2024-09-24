@@ -22,7 +22,11 @@ export default function NewService() {
 
   return (
     <>
-      <TableDialog dialogRef={dialogRef} onCancel={handleCancel} isOpen={isOpen} />
+      <TableDialog
+        dialogRef={dialogRef}
+        onCancel={handleCancel}
+        isOpen={isOpen}
+      />
       <button class="btn btn-primary" type="button" onClick={handleClick}>
         Nuevo Servicio
       </button>
@@ -55,7 +59,7 @@ function TableDialog(props: DialogProps) {
   });
 
   useSignalEffect(() => {
-    if (props.isOpen.value){
+    if (props.isOpen.value) {
       getTables();
     }
   });
@@ -105,4 +109,3 @@ function TableDialog(props: DialogProps) {
     </dialog>
   );
 }
-

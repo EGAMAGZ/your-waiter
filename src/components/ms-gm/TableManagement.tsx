@@ -17,7 +17,9 @@ export default function TableManagement({ initialTables }: Props) {
   return (
     <>
       <div class="overflow-x-auto flex flex-row gap-8">
-        {tables.value.map((table) => <TableCard table={table} onFree={handleFree} />)}
+        {tables.value.map((table) => (
+          <TableCard table={table} onFree={handleFree} />
+        ))}
       </div>
       <div class="flex justify-end">
         <NewService />
