@@ -1,50 +1,66 @@
-# Astro Starter Kit: Minimal
+# YourWaiter 
 
-```sh
-npm create astro@latest -- --template minimal
+**URL de proyecto**:
+
+[your-waiter.deno.dev](your-waiter.deno.dev)
+
+## Servicios
+- Hosting: Deno Deploy
+- DBaaS (Base de datos como Servicio): Supabase
+- DBMS (Sistema Manejador de Base de Datos): PostgresSQL
+
+## Tecnologías
+- Astro
+- Typescript
+- Preact
+- Nodejs (22.8.X)
+## Instalación (para desarrollo)
+1. En carpeta raiz del projecto, ejecutar el siguiente comando para instalar paqueterias y dependencias:
+```bash
+$ npm install --force
 ```
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/astro/tree/latest/examples/minimal)
-[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/withastro/astro/tree/latest/examples/minimal)
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/withastro/astro?devcontainer_path=.devcontainer/minimal/devcontainer.json)
+2. Crear archivo `.env` con las credenciales necesarias, extraidas de Supabase:
+```text
+SUPABASE_URL=<api key>
+SUPABASE_ANON_KEY=<api key>
+PROJECT_REF=<id de proyecto>
+```
+3. Ejecutar proyecto
+```bash
+$ npm run dev
+```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+o tambien
+```bash
+$ node --run dev
+```
 
-## 🚀 Project Structure
+## Estructura del proyecto
 
-Inside of your Astro project, you'll see the following folders and files:
+Dentro del proyecto, se encuentra la siguiente estructura de proyectos y archivos
 
 ```text
 /
 ├── public/
 ├── src/
+│   └── components/
+│   └── layout/
+│   └── lib/
 │   └── pages/
-│       └── index.astro
+│   │   └── api/
+│   │   └── index.astro
+│   └── schema/
+│   └── util/
+│   └── env.d.ts
+│   └── middleware.ts
 └── package.json
 ```
-
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page
-is exposed as a route based on its file name.
-
-There's nothing special about `src/components/`, but that's where we like to put
-any Astro/React/Vue/Svelte/Preact components.
-
-Any static assets, like images, can be placed in the `public/` directory.
-
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into
-our [Discord server](https://astro.build/chat).
+- La carpeta `public` se encuentran los archivos estaticos (imagenes, iconos, audios, etc.) para ser utilizados en el proyecto como el favicon
+- La carpeta `components` se encuentran componentes (bloques del proyecto) que seran reutilizados en el proyecto. Se encuentra subdividido en carpetas para agrupar conforme conforme a Caso de Uso o funcionalidad. Pueden ser escritos en Astro o Preact
+- La carpeta `layout` se encuentran los layouts que se usaran para la paginas, es decir, la base o disposición de la pagína
+- La carpeta `lib` se encuentra la implementación del cliente de Supabase, que sera utilizado en todo el proyecto
+- La carpeta `pages` se encuentran todos los archivos, con terminación `.astro`, que automaticamente seran convertidas a URL. Dentro de esta carpeta se encuentra una subcarpeta, `api`, que contiene las rutas de la API del proyecto que son requeridas
+- La carpeta `schema` se encuentran Schemas para validaciones usando Zod y tipos de datos generados a partir de mismos Schemas o creados manualmente.
+- La carpeta `util` se encuentran funciones, metodos, clases que no pertenecen a lo nada de lo anterios y que son reutilizables
+- El archivo `middleware.ts`se encarga de controlar el acceso la navegación y llamadas a API del proyecto, y obtener información del perfil actual para ser accesible a la misma en cualquier parte del proyecto
