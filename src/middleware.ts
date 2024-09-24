@@ -113,7 +113,7 @@ async function profile(context: APIContext, next: MiddlewareNext) {
 
   const workerQuery = supabase
     .from("Trabajador")
-    .select(`Rol(id_rol, txt_nombre)`)
+    .select(`id_trabajor,Rol(id_rol, txt_nombre)`)
     .eq("fk_id_usuario", userId)
     .single();
 
@@ -135,6 +135,9 @@ async function profile(context: APIContext, next: MiddlewareNext) {
   context.locals.role = {
     id: role.id_rol,
     name: rolesName[role.txt_nombre],
+  };
+  context.locals.worker = {
+    id: workerData.id_trabajor,
   };
   context.locals.navigationOptions = navigationOptions[role.txt_nombre];
   context.locals.welcomeTitle = () => `Bienvenido ${context.locals.role.name}`;

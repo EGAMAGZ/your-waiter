@@ -9,7 +9,7 @@ interface Props {
 }
 
 export default function IngredientSelector({ initialIngredients }: Props) {
-  const ingredients = useSignal<Ingredient[]>( initialIngredients|| []);
+  const ingredients = useSignal<Ingredient[]>(initialIngredients || []);
 
   const addDishDialogRef = useRef<HTMLDialogElement>(null);
 
