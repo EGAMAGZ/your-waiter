@@ -47,7 +47,7 @@ function TableDialog(props: DialogProps) {
 
     if (error) return;
 
-    tables.value = data;
+    tables.value = data.sort((a, b) => a.numberTable - b.numberTable);
   };
 
   useSignalEffect(() => {
