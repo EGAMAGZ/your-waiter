@@ -54,11 +54,10 @@ if(!error){
 	Astro.locals.serverError = "Error al cargar platillos"
 }
 
-
 ---
 <ProfileLayout title={TITLE}>
 	<div class="flex flex-col gap-4 px-4">
 		<h1 class="text-center text-5xl font-bold mt-8 mb-4">{TITLE}</h1>
-		<OrderSelection dishes={dishes} />
+		<OrderSelection client:load dishes={dishes} idTable={tableId!.data as number} />
 	</div>
 </ProfileLayout>

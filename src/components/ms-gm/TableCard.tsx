@@ -86,12 +86,12 @@ function BusyButtons(
 
   return (
     <>
-      <a href={`/manage-tables/new/${props.id}`} class="btn btn-neutral">
-        Continuar
-      </a>
-      <button class="btn btn-secondary" onClick={handleFree}>
+      <button class="btn btn-neutral" onClick={handleFree}>
         Liberar mesa
       </button>
+      <a href={`/manage-tables/new/${props.id}`} class="btn btn-secondary">
+        Continuar pedido
+      </a>
     </>
   );
 }
