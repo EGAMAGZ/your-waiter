@@ -1,0 +1,37 @@
+---
+import ProfileLayout from "@/layouts/ProfileLayout.astro";
+import {z} from "zod";
+import { supabase } from "@/lib/supabase"
+import { tableStatus } from "@/util/table";
+
+const TITLE = "Pedido";
+
+const tableId = z.coerce.number({
+	required_error:"Id de mesa es requerido",
+	invalid_type_error: "Id de mesa debe ser número"
+}).positive({
+	message:"Id de mesa debe ser mayor a 0"
+}).safeParse(Astro.params.id)
+
+if(tableId.success){
+	const id = tableId.data;
+
+	const startServiceQuery = supabase
+		.from("Mesa")
+		.update({
+			fk_id_edo_mesa: tableStatus.busy
+		})
+		.eq("id_mesa", id);
+
+	const { data, error } = await startServiceQuery;
+
+	if(!error){
+
+	} else {
+		Astro.locals.serverError = "Error al inicializar servicio"
+	}
+	
+}
+---
+<ProfileLayout title={TITLE}>
+</ProfileLayout>

@@ -1,7 +1,7 @@
 import { supabase } from "@/lib/supabase";
 import type { ApiResponse } from "@/schema/api-response";
 import type { Table } from "@/schema/table";
-import { tableStatus } from "@/util/table";
+import { getStatusById, tableStatus } from "@/util/table";
 import type { APIRoute } from "astro";
 
 export const GET: APIRoute = async () => {
@@ -23,8 +23,14 @@ export const GET: APIRoute = async () => {
     });
   }
 
+  const tables = data.map((table) => ({
+    id: table.id_mesa,
+    status: getStatusById(table.fk_id_edo_mesa),
+    numberTable: table.nu_mesa,
+  }));
+
   const response: ApiResponse<Table[]> = {
-    data,
+    data:tables,
     message: "Available tables found succesfully",
   };
 

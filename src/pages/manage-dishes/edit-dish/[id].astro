@@ -5,7 +5,6 @@ import { supabase } from "@/lib/supabase";
 import { CreateDishSchema, type CreateDish, type Dish } from "@/schema/dish";
 import type { Ingredient } from "@/schema/ingredient";
 import { formatError, type FormErrors } from "@/util/format-error";
-import type { QueryData } from "@supabase/supabase-js";
 import { z } from "zod";
 
 let formErrors: FormErrors<CreateDish> | undefined;

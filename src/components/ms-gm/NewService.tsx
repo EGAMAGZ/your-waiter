@@ -1,6 +1,6 @@
 import type { ApiResponse } from "@/schema/api-response";
 import type { Table } from "@/schema/table";
-import { useSignal, useSignalEffect } from "@preact/signals";
+import { Signal, useSignal, useSignalEffect } from "@preact/signals";
 import type { Ref } from "preact";
 import type { ChangeEvent } from "preact/compat";
 import { useRef } from "preact/hooks";
@@ -8,17 +8,21 @@ import { useRef } from "preact/hooks";
 export default function NewService() {
   const dialogRef = useRef<HTMLDialogElement | null>(null);
 
+  const isOpen = useSignal(false);
+
   const handleClick = () => {
     dialogRef.current?.showModal();
+    isOpen.value = true;
   };
 
-  const handleCancel= () => {
-	  dialogRef.current?.close();
-  }
+  const handleCancel = () => {
+    dialogRef.current?.close();
+    isOpen.value = false;
+  };
 
   return (
     <>
-      <TableDialog dialogRef={dialogRef} onCancel={handleCancel} />
+      <TableDialog dialogRef={dialogRef} onCancel={handleCancel} isOpen={isOpen} />
       <button class="btn btn-primary" type="button" onClick={handleClick}>
         Nuevo Servicio
       </button>
@@ -29,24 +33,31 @@ export default function NewService() {
 interface DialogProps {
   dialogRef: Ref<HTMLDialogElement>;
   onCancel: () => void;
+  isOpen: Signal<boolean>;
 }
 function TableDialog(props: DialogProps) {
   const tables = useSignal<Table[]>([]);
 
   const selectedTable = useSignal<number | null>(null);
 
+  const getTables = async () => {
+    const response = await fetch("/api/table/available");
+
+    const { data, error } = await response.json() as ApiResponse<Table[]>;
+
+    if (error) return;
+
+    tables.value = data;
+  };
+
   useSignalEffect(() => {
-    const getTables = async () => {
-      const response = await fetch("/api/table/available");
-
-      const { data, error } = await response.json() as ApiResponse<Table[]>;
-
-      if (error) return;
-
-      tables.value = data;
-    };
-
     getTables();
+  });
+
+  useSignalEffect(() => {
+    if (props.isOpen.value){
+      getTables();
+    }
   });
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -71,11 +82,11 @@ function TableDialog(props: DialogProps) {
           {tables.value.map((table) => (
             <div class="form-control">
               <label class="label">
-                <span>Mesa {table.nu_mesa}</span>
+                <span>Mesa {table.numberTable}</span>
                 <input
                   type="radio"
                   name="table"
-                  value={table.id_mesa}
+                  value={table.id}
                   class="radio"
                 />
               </label>
@@ -94,3 +105,4 @@ function TableDialog(props: DialogProps) {
     </dialog>
   );
 }
+
