@@ -1,9 +1,32 @@
 ---
+import OrdersList from "@/components/cn-co/OrdersList";
 import ProfileLayout from "@/layouts/ProfileLayout.astro"
+import { supabase } from "@/lib/supabase"
+
+const  { id: workerId } = Astro.locals.worker
+
+const getOrders = supabase
+	.from("Orden")
+	.select("* ,Comanda(*),Platillo(*)")
+	.eq("st_terminado", false);
+
+const { data: ordersData, error: ordersError } = await getOrders;
+
+console.log(ordersData)
+if(!ordersError){
+
+}
+else {
+	Astro.locals.serverError = "Error al consultar ordenes";
+}
+
 
 ---
 
 <ProfileLayout title="Ordenes">
-	<h1>Ordenes</h1>
+	<div class="flex flex-col gap-2 font-bold">
+		<h1 class="text-center text-5xl">Ordenes</h1>
+		<OrdersList client:idle />
+	</div>
 </ProfileLayout>
 
