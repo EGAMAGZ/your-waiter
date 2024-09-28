@@ -2,8 +2,7 @@
 import OrdersList from "@/components/cn-co/OrdersList";
 import ProfileLayout from "@/layouts/ProfileLayout.astro"
 import { supabase } from "@/lib/supabase"
-
-const  { id: workerId } = Astro.locals.worker
+import { groupByComanda, type ComandaInfo } from "@/util/comanda";
 
 const getOrders = supabase
 	.from("Orden")
@@ -12,21 +11,28 @@ const getOrders = supabase
 
 const { data: ordersData, error: ordersError } = await getOrders;
 
-console.log(ordersData)
+let comandasInfo: ComandaInfo[] = []
 if(!ordersError){
-
+	comandasInfo=groupByComanda(ordersData);
 }
 else {
 	Astro.locals.serverError = "Error al consultar ordenes";
 }
 
-
 ---
 
 <ProfileLayout title="Ordenes">
-	<div class="flex flex-col gap-2 font-bold">
+	<div class="flex flex-col gap-4 px-4">
 		<h1 class="text-center text-5xl">Ordenes</h1>
-		<OrdersList client:idle />
+		<div class="flex flex-1">
+
+		<OrdersList client:idle initialComandas={comandasInfo} />
+		</div>
+		<div class="flex justify-end">
+			<a href="/" class="btn btn-neutral">
+				Regresar
+			</a>
+		</div>	
 	</div>
 </ProfileLayout>
 
