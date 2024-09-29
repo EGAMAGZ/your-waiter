@@ -124,7 +124,6 @@ interface DishOptionProps {
 }
 
 function DishOption({ dish, onClick }: DishOptionProps) {
-
   const quantity = useSignal(dish.quantity);
 
   const handleClick = () => {
@@ -132,8 +131,7 @@ function DishOption({ dish, onClick }: DishOptionProps) {
       quantity.value = quantity.value - 1;
     }
     onClick(dish);
-  }
-
+  };
 
   return (
     <button

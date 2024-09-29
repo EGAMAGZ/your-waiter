@@ -4,8 +4,12 @@ import SearchIngredients from "./SearchIngredients";
 import type { ApiResponse } from "@/schema/api-response";
 import DeleteDialog from "../DeleteDialog";
 
-export default function IngredientsTable() {
-  const ingredients = useSignal<Ingredient[]>([]);
+interface Props {
+  initialIngredients: Ingredient[];
+}
+
+export default function IngredientsTable({ initialIngredients }: Props) {
+  const ingredients = useSignal<Ingredient[]>(initialIngredients);
 
   const ingredientToDelete = useSignal<number | null>(null);
 

@@ -9,7 +9,7 @@ async function updateDishQuantities(dishIds: number[]) {
       ...acc,
       [curr]: (acc[curr] || 0) + 1,
     }),
-    {} as Record<number, number>
+    {} as Record<number, number>,
   );
 
   const { data: dishes, error: dishQuantityError } = await supabase
@@ -31,7 +31,7 @@ async function updateDishQuantities(dishIds: number[]) {
         .eq("id_platillo", dish.id_platillo);
 
       await updateDish;
-    })
+    }),
   );
 }
 

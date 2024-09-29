@@ -35,16 +35,18 @@ export default function TableCard({ table, onFree }: Props) {
 
   const billId = useSignal<number | null>(null);
 
-  useSignalEffect(()=> {
+  useSignalEffect(() => {
     const getBillByTable = async () => {
       const response = await fetch(`/api/bill/${table.id}`);
       console.log(response);
-      const { data, error, message } = await response.json() as ApiResponse<number | null>;
+      const { data, error, message } = await response.json() as ApiResponse<
+        number | null
+      >;
 
-      if(error) {
+      if (error) {
         console.log(message);
       }
-      if(data){
+      if (data) {
         billId.value = data;
       }
 
@@ -87,7 +89,14 @@ function renderButtons(
     case "in_process":
       return <InProcessButtons id={id} status={status} />;
     case "completed":
-      return <CompletedButtons id={id} status={status} onFree={onFree} billId={billId} />;
+      return (
+        <CompletedButtons
+          id={id}
+          status={status}
+          onFree={onFree}
+          billId={billId}
+        />
+      );
     default:
       return <BusyButtons id={id} status={status} onFree={onFree} />;
   }
@@ -141,7 +150,7 @@ function InProcessButtons(props: ButtonsProps) {
 }
 
 function CompletedButtons(
-  props: ButtonsProps & { onFree: (id: number) => void, billId: number | null },
+  props: ButtonsProps & { onFree: (id: number) => void; billId: number | null },
 ) {
   const handleResumeService = () => {
     updateTableStatus(props.id, "in_process", (actualStatus) => {
@@ -151,10 +160,10 @@ function CompletedButtons(
   };
 
   const updateBill = async () => {
-    if(!props.billId) {
-      return;  
+    if (!props.billId) {
+      return;
     }
-	  const response = await fetch(`/api/bill/finished/${props.billId}`, {
+    const response = await fetch(`/api/bill/finished/${props.billId}`, {
       method: "PUT",
     });
 
