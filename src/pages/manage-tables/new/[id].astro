@@ -39,7 +39,8 @@ let dishes: Dish[] = [];
 
 const getDishesQuery = supabase
 	.from("Platillo")
-	.select("*");
+	.select("*")
+	.gt("nu_cantidad", 0);
 
 const { data , error} = await getDishesQuery;
 
