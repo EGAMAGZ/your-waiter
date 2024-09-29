@@ -70,6 +70,7 @@ export default function OrderSelection({ dishes, idTable }: Props) {
             {dishes.map((dish) => (
               <DishOption
                 dish={dish}
+                key={dish.id}
                 onClick={(dish) => {
                   selectedDishes.value = [...selectedDishes.value, dish];
                 }}
@@ -123,12 +124,22 @@ interface DishOptionProps {
 }
 
 function DishOption({ dish, onClick }: DishOptionProps) {
+
+  const quantity = useSignal(dish.quantity);
+
+  const handleClick = () => {
+    if (quantity.value > 0) {
+      quantity.value = quantity.value - 1;
+    }
+    onClick(dish);
+  }
+
+
   return (
     <button
       class="btn btn-outline h-24"
-      onClick={() => {
-        onClick(dish);
-      }}
+      onClick={handleClick}
+      disabled={quantity.value === 0}
     >
       {dish.name}
     </button>
