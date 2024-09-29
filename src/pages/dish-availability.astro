@@ -1,6 +1,30 @@
 ---
 import ProfileLayout from "@/layouts/ProfileLayout.astro";
 import AvailabilityTable from "@/components/cn-cd/AvailabilityTable";
+import type { Dish } from "@/schema/dish";
+import { supabase } from "@/lib/supabase";
+
+let dishes: Dish[] = [];
+
+const getDishes = supabase
+	.from("Platillo")
+	.select("*");
+
+const { data: dishesData, error: dishesError } = await getDishes;
+
+if (dishesError) {
+	Astro.locals.serverError = "Error al obtener platillo";
+} else {
+	dishes = dishesData.map(
+		(dish) =>
+			({
+				id: dish.id_platillo,
+				name: dish.txt_nombre,
+				quantity: dish.nu_cantidad,
+				price: dish.nu_precio,
+			}) as Dish,
+	);
+}
 ---
 
 <ProfileLayout title="Disponibilidad de platillos">
@@ -8,7 +32,7 @@ import AvailabilityTable from "@/components/cn-cd/AvailabilityTable";
 		<h1 class="text-center text-5xl font-bold mt-8 mb-4">
 			Disponibilidad de platillos
 		</h1>
-		<AvailabilityTable client:load />
+		<AvailabilityTable client:load initialDishes={dishes} />
 		<div class="flex flex-row justify-end">
 			<a href="/" class="btn btn-neutral">Regresar</a>
 		</div>

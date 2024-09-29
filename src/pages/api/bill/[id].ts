@@ -3,9 +3,7 @@ import type { ApiResponse } from "@/schema/api-response";
 import type { APIRoute } from "astro";
 import { z } from "zod";
 
-
-export const GET: APIRoute = async ({params}) => {
-
+export const GET: APIRoute = async ({ params }) => {
   const tableId = z.coerce.number({
     required_error: "Id de mesa es requerido",
     invalid_type_error: "Id de mesa debe ser número",
@@ -17,11 +15,11 @@ export const GET: APIRoute = async ({params}) => {
     message: "Id de mesa es un valor muy grande",
   }).safeParse(params.id);
 
-  if(!tableId.success) {
+  if (!tableId.success) {
     const response: ApiResponse = {
       error: "validation_error",
       message: tableId.error.format(),
-    }
+    };
 
     return Response.json(response, {
       status: 400,
@@ -37,7 +35,7 @@ export const GET: APIRoute = async ({params}) => {
 
   const { data, error } = await getTableInfo;
 
-  if(error) {
+  if (error) {
     const response: ApiResponse = {
       error: "server_error",
       message: error.message,
@@ -50,13 +48,13 @@ export const GET: APIRoute = async ({params}) => {
 
   let billId: number | null = null;
 
-  if(data) {
+  if (data) {
     billId = data.id_cuenta;
   }
 
   const response: ApiResponse<number | null> = {
     message: "Table found succesfully",
-    data: billId
+    data: billId,
   };
 
   return Response.json(response, {

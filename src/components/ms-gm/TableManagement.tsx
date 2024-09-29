@@ -21,7 +21,7 @@ export default function TableManagement({ initialTables }: Props) {
       {tables.value.length > 0 && (
         <div class="overflow-x-auto flex flex-row gap-8">
           {tables.value.map((table) => (
-            <TableCard table={table} onFree={handleFree} />
+            <TableCard key={table.id} table={table} onFree={handleFree} />
           ))}
         </div>
       )}

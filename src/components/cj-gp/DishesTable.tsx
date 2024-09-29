@@ -5,11 +5,11 @@ import type { ApiResponse } from "@/schema/api-response";
 import DeleteDialog from "../DeleteDialog";
 
 interface Props {
-  dishes: Dish[];
+  initialDishes: Dish[];
 }
 
-export default function DishesTables() {
-  const dishes = useSignal<Dish[]>([]);
+export default function DishesTables({ initialDishes }: Props) {
+  const dishes = useSignal<Dish[]>(initialDishes);
 
   const dishToDelete = useSignal<number | null>(null);
 
