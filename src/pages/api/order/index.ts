@@ -3,39 +3,36 @@ import type { ApiResponse } from "@/schema/api-response";
 import type { CreateOrder } from "@/schema/order";
 import type { APIRoute } from "astro";
 
-async function updateDishCount(dishId: number[]) {
+async function updateDishQuantities(dishIds: number[]) {
+  const dishIdCounts: Record<number, number> = dishIds.reduce(
+    (acc, curr) => ({
+      ...acc,
+      [curr]: (acc[curr] || 0) + 1,
+    }),
+    {} as Record<number, number>
+  );
 
-  const dishCount = dishId.reduce((acc: Record<number, number>, curr) => {
-    if (acc[curr]) {
-      acc[curr] += 1;
-    } else {
-      acc[curr] = 1;
-    }
-    return acc;
-  }, {});
-
-  console.log(dishId);
-  const dishQuantity = supabase
+  const { data: dishes, error: dishQuantityError } = await supabase
     .from("Platillo")
     .select("id_platillo, nu_cantidad")
-    .in("id_platillo", Object.keys(dishCount)); 
-
-  const { data: dishQuantityData, error: dishQuantityError } = await dishQuantity;
+    .in("id_platillo", Object.keys(dishIdCounts));
 
   if (dishQuantityError) {
     return dishQuantityError;
   }
 
-  dishQuantityData.forEach(async (dish) => {
-    const updateDish = supabase
-      .from("Platillo")
-      .update({
-        nu_cantidad: dish.nu_cantidad - dishCount[dish.id_platillo],
-      })
-      .eq("id_platillo", dish.id_platillo);
+  await Promise.all(
+    dishes.map(async (dish) => {
+      const updateDish = supabase
+        .from("Platillo")
+        .update({
+          nu_cantidad: dish.nu_cantidad - dishIdCounts[dish.id_platillo],
+        })
+        .eq("id_platillo", dish.id_platillo);
 
-    await updateDish;
-  });
+      await updateDish;
+    })
+  );
 }
 
 export const POST: APIRoute = async ({ request, locals }) => {
@@ -103,7 +100,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
     });
   }
 
-  const updateDishError = await updateDishCount(body.dishes);
+  const updateDishError = await updateDishQuantities(body.dishes);
   if (updateDishError) {
     const response: ApiResponse = {
       error: "server_error",
