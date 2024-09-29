@@ -3,8 +3,12 @@ import { useSignal, useSignalEffect } from "@preact/signals";
 import SearchDishesAvailability from "./SearchDishesAvailability";
 import type { ApiResponse } from "@/schema/api-response";
 
-export default function AvailabilityTable() {
-  const dishes = useSignal<Dish[]>([]);
+interface Props {
+  initialDishes: Dish[];
+}
+
+export default function AvailabilityTable({ initialDishes }: Props) {
+  const dishes = useSignal<Dish[]>(initialDishes);
 
   useSignalEffect(() => {
     const getAllDishes = async () => {
