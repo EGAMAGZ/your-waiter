@@ -3,6 +3,41 @@ import type { ApiResponse } from "@/schema/api-response";
 import type { CreateOrder } from "@/schema/order";
 import type { APIRoute } from "astro";
 
+async function updateDishCount(dishId: number[]) {
+
+  const dishCount = dishId.reduce((acc: Record<number, number>, curr) => {
+    if (acc[curr]) {
+      acc[curr] += 1;
+    } else {
+      acc[curr] = 1;
+    }
+    return acc;
+  }, {});
+
+  console.log(dishId);
+  const dishQuantity = supabase
+    .from("Platillo")
+    .select("id_platillo, nu_cantidad")
+    .in("id_platillo", Object.keys(dishCount)); 
+
+  const { data: dishQuantityData, error: dishQuantityError } = await dishQuantity;
+
+  if (dishQuantityError) {
+    return dishQuantityError;
+  }
+
+  dishQuantityData.forEach(async (dish) => {
+    const updateDish = supabase
+      .from("Platillo")
+      .update({
+        nu_cantidad: dish.nu_cantidad - dishCount[dish.id_platillo],
+      })
+      .eq("id_platillo", dish.id_platillo);
+
+    await updateDish;
+  });
+}
+
 export const POST: APIRoute = async ({ request, locals }) => {
   const body = await request.json() as CreateOrder;
 
@@ -61,6 +96,18 @@ export const POST: APIRoute = async ({ request, locals }) => {
     const response: ApiResponse = {
       error: "server_error",
       message: orderError.message,
+    };
+
+    return Response.json(response, {
+      status: 500,
+    });
+  }
+
+  const updateDishError = await updateDishCount(body.dishes);
+  if (updateDishError) {
+    const response: ApiResponse = {
+      error: "server_error",
+      message: updateDishError.message,
     };
 
     return Response.json(response, {
