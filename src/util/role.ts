@@ -21,10 +21,10 @@ export const navigationOptions: Record<string, NavigationOption[]> = {
   ],
   "cashier": [
     { path: "/manage-dishes", name: "Gestionar platillo" },
-    {
+/*    {
       path: "/manage-bills",
       name: "Gestionar cuentas",
-    },
+    },*/
   ],
   "waiter": [
     { path: "/manage-tables", name: "Gestionar mesas" },

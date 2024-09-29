@@ -6,8 +6,6 @@ import type { APIRoute } from "astro";
 export const POST: APIRoute = async ({ request, locals }) => {
   const body = await request.json() as CreateOrder;
 
-  const userId = (await supabase.auth.getUser()).data.user?.id;
-
   const createBill = supabase
     .from("Cuenta")
     .insert([{
@@ -53,9 +51,10 @@ export const POST: APIRoute = async ({ request, locals }) => {
     fk_id_platillo: dish,
     fk_id_comanda: comandaData.id_comanda,
   }));
+
   const createOrder = supabase.from("Orden")
-  .insert(inserts)
-  .select();
+    .insert(inserts)
+    .select();
 
   const { data: orderData, error: orderError } = await createOrder;
   if (orderError) {
