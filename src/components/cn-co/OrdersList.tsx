@@ -35,7 +35,7 @@ export default function OrdersList({ initialComandas }: Props) {
 
 function NoTablesCard() {
   return (
-    <div class="bg-gray-300 p-4 flex flex-col justify-center items-center rounded gap-2">
+    <div class="bg-gray-300 p-4 flex flex-col justify-center items-center rounded gap-2 w-full">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 24 24"
