@@ -19,12 +19,14 @@ export default function OrdersList({ initialComandas }: Props) {
     <>
       {comandasInfo.value.length === 0 && <NoTablesCard />}
       {comandasInfo.value.length > 0 && (
-        <div class="w-screen">
-          <div class="overflow-x-auto flex whitespace-nowrap gap-2">
-            {comandasInfo.value.map((commanda) => (
-              <OrderCard key={commanda.idComanda} comandaInfo={commanda} onFinished={handleFinished} />
-            ))}
-          </div>
+        <div class="overflow-x-auto flex whitespace-nowrap gap-2">
+          {comandasInfo.value.map((commanda) => (
+            <OrderCard
+              key={commanda.idComanda}
+              comandaInfo={commanda}
+              onFinished={handleFinished}
+            />
+          ))}
         </div>
       )}
     </>

@@ -1,5 +1,5 @@
 import type { Table, UpdateTableStatus } from "@/schema/table";
-import { Signal, useSignal } from "@preact/signals";
+import { Signal, useSignal, useSignalEffect } from "@preact/signals";
 import { type TableStatus } from "@/util/table";
 import type { ApiResponse } from "@/schema/api-response";
 
@@ -32,6 +32,28 @@ interface Props {
 
 export default function TableCard({ table, onFree }: Props) {
   const status = useSignal<string>(table.status);
+
+  const billId = useSignal<number | null>(null);
+
+  useSignalEffect(()=> {
+    const getBillByTable = async () => {
+      const response = await fetch(`/api/bill/${table.id}`);
+      console.log(response);
+      const { data, error, message } = await response.json() as ApiResponse<number | null>;
+
+      if(error) {
+        console.log(message);
+      }
+      if(data){
+        billId.value = data;
+      }
+
+      console.log(data);
+    };
+
+    getBillByTable();
+  });
+
   return (
     <div class="card card-bordered w-[28rem]">
       <div class="card-body">
@@ -39,6 +61,7 @@ export default function TableCard({ table, onFree }: Props) {
         <div class="card-actions justify-between">
           {renderButtons({
             id: table.id,
+            billId: billId.value,
             status,
             onFree,
           })}
@@ -50,12 +73,13 @@ export default function TableCard({ table, onFree }: Props) {
 
 interface RenderButtonsProps {
   id: number;
+  billId: number | null;
   status: Signal<TableStatus>;
   onFree: (id: number) => void;
 }
 
 function renderButtons(
-  { status, id, onFree }: RenderButtonsProps,
+  { status, id, onFree, billId }: RenderButtonsProps,
 ) {
   switch (status.value) {
     case "busy":
@@ -63,7 +87,7 @@ function renderButtons(
     case "in_process":
       return <InProcessButtons id={id} status={status} />;
     case "completed":
-      return <CompletedButtons id={id} status={status} onFree={onFree} />;
+      return <CompletedButtons id={id} status={status} onFree={onFree} billId={billId} />;
     default:
       return <BusyButtons id={id} status={status} onFree={onFree} />;
   }
@@ -104,10 +128,12 @@ function InProcessButtons(props: ButtonsProps) {
   };
   return (
     <>
-      <a href={`/manage-tables/edit/${props.id}`} class="btn btn-neutral">
+      {
+        /*<a href={`/manage-tables/edit/${props.id}`} class="btn btn-neutral">
         Editar pedido
-      </a>
-      <button class="btn btn-secondary" onClick={handleCompleteService}>
+      </a>*/
+      }
+      <button class="btn btn-secondary grow" onClick={handleCompleteService}>
         Terminar servicio
       </button>
     </>
@@ -115,16 +141,33 @@ function InProcessButtons(props: ButtonsProps) {
 }
 
 function CompletedButtons(
-  props: ButtonsProps & { onFree: (id: number) => void },
+  props: ButtonsProps & { onFree: (id: number) => void, billId: number | null },
 ) {
   const handleResumeService = () => {
     updateTableStatus(props.id, "in_process", (actualStatus) => {
       props.status.value = actualStatus;
+      updateBill();
     });
+  };
+
+  const updateBill = async () => {
+    if(!props.billId) {
+      return;  
+    }
+	  const response = await fetch(`/api/bill/finished/${props.billId}`, {
+      method: "PUT",
+    });
+
+    const { error } = await response.json() as ApiResponse<boolean>;
+    if (error) {
+      console.log(error);
+      return;
+    }
   };
 
   const handlePrintBill = () => {
     updateTableStatus(props.id, "free", (actualStatus) => {
+      updateBill();
       props.status.value = actualStatus;
       props.onFree(props.id);
     });
