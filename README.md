@@ -1,5 +1,8 @@
 # YourWaiter
 
+**URL de documentacion**:
+[Documentacion](https://drive.google.com/drive/folders/12dpj1jh5kyHUQhxRBsrNWq9WsIfvrNBw)
+
 **URL de proyecto**:
 
 [your-waiter.deno.dev](your-waiter.deno.dev)
