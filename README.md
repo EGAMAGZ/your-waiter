@@ -8,18 +8,22 @@
 
 ## Servicios utilizados para el proyecto
 
-- Hosting: Deno Deploy
-- DBaaS (Base de datos como Servicio): Supabase
-- DBMS (Sistema Manejador de Base de Datos): PostgresSQL
+- Servidio de Hosting (donde esta desplegado el proyecto a producción): Deno Deploy
+- El servicio de base de datos en la nube utilizado: Supabase
+- Sistema Manejador de Base de Datos (que el utiliza el servicio de base de datos en la nube): PostgresSQL
 
 ## Tecnologías utilizadas para el desarrollo del proyecto
 
-- Astro
-- Typescript
-- Preact
-- Nodejs (22.8.X)
+- Astro (Framework con el que fue desarrollado)
+- Typescript (Lenguaje de programacion usado)
+- Preact (Libreria usada para hacer la interfaz de usuario)
+- [Nodejs](https://nodejs.org/en/download/package-manager) (Instalar 22.8.X o superior)
 
 ## Instalación de proyecto (para desarrollo en local)
+>[!Important]
+> Se requiere instalar las siguientes herramientas antes de proceder:
+> - [Nodejs](https://nodejs.org/en/download/package-manager) en su versión 22.8.X o superior
+> - [Git](https://git-scm.com/)
 
 1. En carpeta raiz del projecto, ejecutar el siguiente comando para instalar
    paqueterias y dependencias:
@@ -47,6 +51,8 @@ o tambien
 ```bash
 $ node --run dev
 ```
+>[!IMPORTANT]
+> Al estar la base de de datos en la nube (Supabase), en todo momento se requerirá conexión a internet al estar ejecutandose en local
 
 ## Estructura del proyecto
 
