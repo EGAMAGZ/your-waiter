@@ -35,6 +35,42 @@ async function updateDishQuantities(dishIds: number[]) {
   );
 }
 
+async function updateIngredientsQuantities(
+  ingredients: number[],
+) {
+  const ingredientIdCounts: Record<number, number> = ingredients.reduce(
+    (acc, curr) => ({
+      ...acc,
+      [curr]: (acc[curr] || 0) + 1,
+    }),
+    {} as Record<number, number>,
+  );
+
+  const { data: ingredientsQuantity, error: ingredientsQuatityError } =
+    await supabase
+      .from("Ingrediente Extra")
+      .select("id_ingrediente, nu_cantidad")
+      .in("id_ingrediente", Object.keys(ingredientIdCounts));
+
+  if (ingredientsQuatityError) {
+    return ingredientsQuatityError;
+  }
+
+  await Promise.all(
+    ingredientsQuantity.map(async (ingredient) => {
+      const updateIngredient = supabase
+        .from("Ingrediente Extra")
+        .update({
+          nu_cantidad: ingredient.nu_cantidad -
+            ingredientIdCounts[ingredient.id_ingrediente],
+        })
+        .eq("id_ingrediente", ingredient.id_ingrediente);
+
+      await updateIngredient;
+    }),
+  );
+}
+
 export const POST: APIRoute = async ({ request, locals }) => {
   const body = await request.json() as CreateOrder;
 
@@ -54,7 +90,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
       error: "server_error",
       message: billError.message,
     };
-
+    console.log("Bill creation error response:", response);
     return Response.json(response, {
       status: 500,
     });
@@ -106,6 +142,20 @@ export const POST: APIRoute = async ({ request, locals }) => {
       error: "server_error",
       message: updateDishError.message,
     };
+
+    return Response.json(response, {
+      status: 500,
+    });
+  }
+
+  const updateIngredientError = await updateIngredientsQuantities(body.ingredientsId);
+
+  if (updateIngredientError) {
+    const response: ApiResponse = {
+      error: "server_error",
+      message: updateIngredientError.message,
+    };
+    console.log(response);
 
     return Response.json(response, {
       status: 500,

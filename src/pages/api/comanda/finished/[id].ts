@@ -40,7 +40,7 @@ export const PUT: APIRoute = async ({ params }) => {
       error: "server_error",
       message: error.message,
     };
-
+    console.log("Comanda status update error response:", response);
     return Response.json(response, {
       status: 500,
     });

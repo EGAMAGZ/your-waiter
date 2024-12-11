@@ -6,7 +6,7 @@ import { groupByComanda, type ComandaInfo } from "@/util/comanda";
 
 const getOrders = supabase
 	.from("Orden")
-	.select("* ,Comanda(*),Platillo(*)")
+	.select("* ,Comanda(Cuenta(Mesa(nu_mesa))),Platillo(*)")
 	.eq("st_terminado", false);
 
 const { data: ordersData, error: ordersError } = await getOrders;

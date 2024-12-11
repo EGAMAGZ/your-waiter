@@ -1,26 +1,29 @@
 # YourWaiter
 
-**URL de documentacion**:
+**URL de documentacion de proyecto**:
 [Documentacion](https://drive.google.com/drive/folders/12dpj1jh5kyHUQhxRBsrNWq9WsIfvrNBw)
 
-**URL de proyecto**:
+**URL de proyecto (Produccion)**:
+[your-waiter.deno.dev](https://your-waiter.deno.dev)
 
-[your-waiter.deno.dev](your-waiter.deno.dev)
+## Servicios utilizados para el proyecto
 
-## Servicios
+- Servidio de Hosting (donde esta desplegado el proyecto a producción): Deno Deploy
+- El servicio de base de datos en la nube utilizado: Supabase
+- Sistema Manejador de Base de Datos (que el utiliza el servicio de base de datos en la nube): PostgresSQL
 
-- Hosting: Deno Deploy
-- DBaaS (Base de datos como Servicio): Supabase
-- DBMS (Sistema Manejador de Base de Datos): PostgresSQL
+## Tecnologías utilizadas para el desarrollo del proyecto
 
-## Tecnologías
+- Astro (Framework con el que fue desarrollado)
+- Typescript (Lenguaje de programacion usado)
+- Preact (Libreria usada para hacer la interfaz de usuario)
+- [Nodejs](https://nodejs.org/en/download/package-manager) (Instalar 22.8.X o superior)
 
-- Astro
-- Typescript
-- Preact
-- Nodejs (22.8.X)
-
-## Instalación (para desarrollo)
+## Instalación de proyecto (para desarrollo en local)
+>[!Important]
+> Se requiere instalar las siguientes herramientas antes de proceder:
+> - [Nodejs](https://nodejs.org/en/download/package-manager) en su versión 22.8.X o superior
+> - [Git](https://git-scm.com/)
 
 1. En carpeta raiz del projecto, ejecutar el siguiente comando para instalar
    paqueterias y dependencias:
@@ -37,7 +40,7 @@ SUPABASE_ANON_KEY=<api key>
 PROJECT_REF=<id de proyecto>
 ```
 
-3. Ejecutar proyecto
+3. Ejecutar proyecto de manera local
 
 ```bash
 $ npm run dev
@@ -48,6 +51,8 @@ o tambien
 ```bash
 $ node --run dev
 ```
+>[!IMPORTANT]
+> Al estar la base de de datos en la nube (Supabase), en todo momento se requerirá conexión a internet al estar ejecutandose en local
 
 ## Estructura del proyecto
 

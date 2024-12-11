@@ -1,20 +1,24 @@
 ---
 import ProfileLayout from "@/layouts/ProfileLayout.astro";
 import NavigationCard from "@/components/NavigationCard.astro";
+import { rolesName } from "@/util/role";
+import OrderNotification from "@/components/ms-gm/OrderNotification.astro";
 
-const { welcomeTitle, navigationOptions } = Astro.locals;
+const { welcomeTitle, navigationOptions, role } = Astro.locals;
 ---
 
 <ProfileLayout title="Your Waiter">
+	{role.name === "waiter" && <OrderNotification client:idle />}
 	<div class="container mx-auto flex flex-col gap-2">
-	    <h1 class="text-center text-5xl font-bold mt-8 mb-4">{welcomeTitle()}</h1>
-	    <div class="grid grid-cols-2 items-center gap-6">
-		{
-		    navigationOptions.map((option)=> (
-		    <NavigationCard path={option.path} title={option.name} >
-		    </NavigationCard>
-		    ))
-		}
-	    </div>
+		<h1 class="text-center text-5xl font-bold mt-8 mb-4">
+			{welcomeTitle()}
+		</h1>
+		<div class="grid grid-cols-2 items-center gap-6">
+			{
+				navigationOptions.map((option) => (
+					<NavigationCard path={option.path} title={option.name} />
+				))
+			}
+		</div>
 	</div>
 </ProfileLayout>

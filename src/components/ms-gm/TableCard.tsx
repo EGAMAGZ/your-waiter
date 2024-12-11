@@ -18,7 +18,6 @@ async function updateTableStatus(
   const { error, message } = await response.json() as ApiResponse<TableStatus>;
 
   if (error) {
-    console.log(message);
     return;
   }
 
@@ -38,7 +37,6 @@ export default function TableCard({ table, onFree }: Props) {
   useSignalEffect(() => {
     const getBillByTable = async () => {
       const response = await fetch(`/api/bill/${table.id}`);
-      console.log(response);
       const { data, error, message } = await response.json() as ApiResponse<
         number | null
       >;
@@ -50,7 +48,6 @@ export default function TableCard({ table, onFree }: Props) {
         billId.value = data;
       }
 
-      console.log(data);
     };
 
     getBillByTable();

@@ -8,6 +8,7 @@ export interface ComandaInfo {
   idComanda: number;
   finished: boolean;
   dishes: DishInfo[];
+  tableNumber: number;
 }
 
 export const groupByComanda = (orders: any[]): ComandaInfo[] =>
@@ -16,7 +17,7 @@ export const groupByComanda = (orders: any[]): ComandaInfo[] =>
       c.idComanda === order.fk_id_comanda
     );
 
-    const dish = {
+    const dish: DishInfo = {
       idOrder: order.id,
       name: order.Platillo.txt_nombre,
       finished: order.st_terminado,
@@ -31,6 +32,7 @@ export const groupByComanda = (orders: any[]): ComandaInfo[] =>
         idComanda: order.fk_id_comanda,
         finished: order.st_terminado,
         dishes: [dish],
+        tableNumber: order.Comanda.Cuenta.Mesa.nu_mesa
       });
     }
 

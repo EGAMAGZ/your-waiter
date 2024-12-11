@@ -10,4 +10,5 @@ export const PUBLIC_URLS = [
   SIGN_IN_URL,
   "/api/auth/sign-in",
   "/api/auth/sign-out",
+  "/api/order/stream",
 ];
