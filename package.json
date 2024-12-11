@@ -8,7 +8,7 @@
     "build": "astro check && astro build",
     "preview": "deno run --allow-net --allow-read --allow-env ./dist/server/entry.mjs",
     "astro": "astro",
-    "update-types": "npx supabase gen types --lang=typescript --project-id \"$PROJECT_REF\" --schema public"
+    "update-types": "npx supabase gen types --lang=typescript --project-id \"slmqmqlrhfcttqvqskdk\" --schema public"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.3",
@@ -17,6 +17,8 @@
     "@astrojs/tailwind": "^5.1.0",
     "@preact-hooks/fetch": "npm:@jsr/preact-hooks__fetch@^0.0.4",
     "@preact/signals": "^1.3.0",
+    "@pretch/core": "npm:@jsr/pretch__core@^0.5.4",
+    "@pretch/preact": "npm:@jsr/pretch__preact@^0.1.7",
     "@supabase/supabase-js": "^2.45.3",
     "astro": "^4.15.3",
     "jspdf": "^2.5.2",

@@ -5,6 +5,7 @@ import { supabase } from "@/lib/supabase"
 import { tableStatus } from "@/util/table";
 import type { Dish } from "@/schema/dish";
 import OrderSelection from "@/components/ms-gm/OrderSelection"
+import OrderNotification from "@/components/ms-gm/OrderNotification.astro";
 
 const TITLE = "Pedido";
 
@@ -55,8 +56,10 @@ if(!error){
 	Astro.locals.serverError = "Error al cargar platillos"
 }
 
+const { role } = Astro.locals;
 ---
 <ProfileLayout title={TITLE}>
+	{role.name === "waiter" && <OrderNotification client:idle />}
 	<div class="flex flex-col gap-4 px-4">
 		<h1 class="text-center text-5xl font-bold mt-8 mb-4">{TITLE}</h1>
 		<OrderSelection client:load dishes={dishes} idTable={tableId!.data as number} />

@@ -36,7 +36,7 @@ export const GET: APIRoute = async ({ request }) => {
       message: dishesError.message,
       error: "server_error",
     } as ApiResponse;
-
+    console.log("Dish search error response:", response);
     return Response.json(response, {
       status: 500,
     });

@@ -62,16 +62,19 @@ export default function OrderCard({ comandaInfo, onFinished }: Props) {
 
   return (
     <div class="card card-bordered w-72 h-96">
-      <div class="card-body">
-        <div class="flex-1">
-          <span class="text-center font-bold block">
+      <div class="card-body overflow-y-auto">
+        <div class="flex flex-col items-center">
+          <div class="font-bold text-xl">
             Orden {comandaInfo.idComanda}
-          </span>
-          <div class="flex flex-col gap-4">
-            {dishes.value.map((dish) => (
-              <DishStatus dishInfo={dish} onFinished={handleDishFinished} />
-            ))}
           </div>
+          <div class="badge badge-neutral">
+            Mesa #{comandaInfo.tableNumber}
+          </div>
+        </div>
+        <div class="flex-1 flex flex-col gap-4">
+          {dishes.value.map((dish) => (
+            <DishStatus dishInfo={dish} onFinished={handleDishFinished} />
+          ))}
         </div>
         <div class="card-actions">
           <button

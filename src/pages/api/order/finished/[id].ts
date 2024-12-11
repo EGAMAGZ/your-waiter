@@ -1,3 +1,4 @@
+import NotificationOrderController from "@/controllers/notification-orders";
 import { supabase } from "@/lib/supabase";
 import type { ApiResponse } from "@/schema/api-response";
 import type { APIRoute } from "astro";
@@ -29,9 +30,11 @@ export const PUT: APIRoute = async ({ params }) => {
     .update({
       st_terminado: true,
     })
-    .eq("id", orderId.data);
+    .eq("id", orderId.data)
+    .select("Comanda(Cuenta(Mesa(nu_mesa)))")
+    .single();
 
-  const { error } = await updateOrder;
+  const { error, data } = await updateOrder;
 
   if (error) {
     const response: ApiResponse = {
@@ -48,6 +51,8 @@ export const PUT: APIRoute = async ({ params }) => {
     message: "Updated finish status of order",
     data: true,
   };
+
+  NotificationOrderController.getInstance().sendNotification({ orderId: orderId.data, tableNumber: data.Comanda?.Cuenta?.Mesa?.nu_mesa });
 
   return Response.json(response, {
     status: 200,
