@@ -1,0 +1,27 @@
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        console.log("Initializing EventSource");
+        const eventSource = new EventSource("/api/order/stream");
+
+        eventSource.onmessage = (event) => {
+            const data: { orderId: number, tableNumber: number } = JSON.parse(event.data);
+            alert(`Orden #${data.orderId} terminada, para mesa #${data.tableNumber}`);
+            console.log("Received message:", event.data);
+        };
+
+        eventSource.onerror = (event) => {
+            console.log("EventSource error:", event);
+            if (eventSource.readyState === EventSource.CLOSED) {
+                console.log("EventSource was closed");
+            }
+        };
+
+        eventSource.onopen = (event) => {
+            console.log("EventSource connected");
+        };
+
+        window.addEventListener("beforeunload", () => {
+            eventSource.close();
+        });
+    });
+</script>

@@ -20,7 +20,6 @@ async function updateTableStatus(
   const { error, message } = await response.json() as ApiResponse<TableStatus>;
 
   if (error) {
-    console.log(message);
     return;
   }
 

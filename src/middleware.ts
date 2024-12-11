@@ -142,6 +142,11 @@ async function profile(context: APIContext, next: MiddlewareNext) {
   context.locals.navigationOptions = navigationOptions[role.txt_nombre];
   context.locals.welcomeTitle = () => `Bienvenido ${context.locals.role.name}`;
 
+  // If it's the SSE endpoint, make sure we're not interfering with the connection
+  if (context.request.url.includes('/api/order/stream')) {
+    console.log("SSE connection passing through middleware");
+  }
+
   return await next();
 }
 

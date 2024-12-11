@@ -4,6 +4,7 @@ import { supabase } from "@/lib/supabase";
 import type { Table } from "@/schema/table";
 import { getStatusById, tableStatus,   } from "@/util/table";
 import TableManagement from "@/components/ms-gm/TableManagement"
+import OrderNotification from "@/components/ms-gm/OrderNotification.astro";
 
 const TITLE = "Gestionar mesas"
 
@@ -26,8 +27,11 @@ if(!error){
 	Astro.locals.serverError = "Error al cargar mesas"
 }
 
+const { role } = Astro.locals;
+
 ---
 <ProfileLayout title={TITLE}>
+	{role.name === "waiter" && <OrderNotification client:idle />}
 	<div class="flex flex-col gap-4 px-4">
 		<h1 class="text-center text-5xl font-bold mt-8 mb-4">{TITLE}</h1>
 		<TableManagement client:idle initialTables={tables} />
