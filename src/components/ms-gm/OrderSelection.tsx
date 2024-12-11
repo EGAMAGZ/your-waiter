@@ -10,20 +10,20 @@ async function updateTableStatus(
   tableStatus: TableStatus,
   onChanged: () => void,
 ) {
-  const response = await fetch(`/api/table/${id}`, {
-    method: "PUT",
-    body: JSON.stringify({
-      status: tableStatus,
-    } as UpdateTableStatus),
-  });
+  try {
+    const response = await fetch(`/api/table/${id}`, {
+      method: "PUT",
+      body: JSON.stringify({ status: tableStatus } as UpdateTableStatus),
+    });
 
-  const { error, message } = await response.json() as ApiResponse<TableStatus>;
+    if (!response.ok) {
+      throw new Error(await response.text());
+    }
 
-  if (error) {
-    return;
+    onChanged();
+  } catch (error) {
+    console.error(error);
   }
-
-  onChanged();
 }
 
 interface Props {
@@ -40,29 +40,31 @@ export default function OrderSelection({ dishes, idTable }: Props) {
   const dishOptionsRefs = new Map<number, () => void>();
 
   const handleCancelOrder = async () => {
-    updateTableStatus(idTable, "free", () => {
+    await updateTableStatus(idTable, "free", () => {
       window.location.replace("/manage-tables");
     });
   };
 
   const handleCompleteOrder = async () => {
-    const response = await fetch("/api/order", {
-      method: "POST",
-      body: JSON.stringify({
-        dishes: selectedDishes.value.map((dish) => dish.id),
-        idTable,
-      } as CreateOrder),
-    });
+    try {
+      const response = await fetch("/api/order", {
+        method: "POST",
+        body: JSON.stringify({
+          dishes: selectedDishes.value.map((dish) => dish.id),
+          idTable,
+        } as CreateOrder),
+      });
 
-    const { error, message } = await response.json() as ApiResponse<string>;
-    if (error) {
-      console.log(message);
-      return;
+      if (!response.ok) {
+        throw new Error(await response.text());
+      }
+
+      await updateTableStatus(idTable, "in_process", () => {
+        window.location.replace("/manage-tables");
+      });
+    } catch (error) {
+      console.error(error);
     }
-
-    updateTableStatus(idTable, "in_process", () => {
-      window.location.replace("/manage-tables");
-    });
   };
 
   return (
@@ -73,15 +75,13 @@ export default function OrderSelection({ dishes, idTable }: Props) {
           <div class="grid grid-cols-4 gap-4">
             {dishes.map((dish) => (
               <DishOption
-                dish={dish}
                 key={dish.id}
-                onClick={(dish) => {
+                dish={dish}
+                onDecreaseSelection={(dish) => {
                   selectedDishes.value = [...selectedDishes.value, dish];
                 }}
-                increaseRef={(increaseQty) => {
-                  if (increaseQty) {
-                    dishOptionsRefs.set(dish.id, increaseQty);
-                  }
+                onIncreaseSelection={(increaseQty) => {
+                  dishOptionsRefs.set(dish.id, increaseQty);
                 }}
               />
             ))}
@@ -95,6 +95,7 @@ export default function OrderSelection({ dishes, idTable }: Props) {
             <div class="flex flex-col gap-4 max-h-96 overflow-y-auto bg-gray-300 p-4 rounded">
               {selectedDishes.value.map((dish, index) => (
                 <DishSelection
+                  key={dish.id}
                   dish={dish}
                   index={index}
                   onDeleteClick={(idx) => {
@@ -134,11 +135,11 @@ export default function OrderSelection({ dishes, idTable }: Props) {
 
 interface DishOptionProps {
   dish: Dish;
-  onClick: (dish: DishWithCurrentQuantity) => void;
-  increaseRef: (increaseQty: () => void) => void;
+  onDecreaseSelection: (dish: DishWithCurrentQuantity) => void;
+  onIncreaseSelection: (increaseQty: () => void) => void;
 }
 
-function DishOption({ dish, onClick, increaseRef: ref }: DishOptionProps) {
+function DishOption({ dish, onDecreaseSelection: onClick, onIncreaseSelection: ref }: DishOptionProps) {
   const quantity = useSignal(dish.quantity);
 
   const handleClick = () => {
