@@ -47,6 +47,8 @@ export default function ExtraIngredientsSelection(
                         />
                     </label>
                 ))}
+                <p>Comentarios</p>
+                <textarea class="textarea textarea-bordered textarea-primary w-full"></textarea>
                 <div class="flex gap-4">
                     <button class="btn btn-outline" onClick={onCancelSelection}>
                         Cancelar

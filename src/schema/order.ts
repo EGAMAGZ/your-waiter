@@ -1,6 +1,7 @@
 export type CreateOrder = {
   dishes: number[];
   idTable: number;
+  ingredientsId: number[];
 };
 
 export type Order = {

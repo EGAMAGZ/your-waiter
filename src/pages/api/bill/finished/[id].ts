@@ -37,7 +37,7 @@ export const PUT: APIRoute = async ({ params }) => {
       message: error.message,
       error: "server_error",
     };
-
+    console.log("Bill status update error response:", response);
     return Response.json(response, {
       status: 500,
     });

@@ -52,11 +52,6 @@ interface DishWithCurrentQuantity extends Dish {
   currentQuantity: number;
 }
 
-type IngredientForDish = {
-  dishId: number;
-  ingredients: number[];
-};
-
 export default function OrderSelection({ dishes, idTable }: Props) {
   const selectedDishes = useSignal<Dish[]>([]);
   const dishOptionsRefs = new Map<number, () => void>();
@@ -78,6 +73,7 @@ export default function OrderSelection({ dishes, idTable }: Props) {
         body: JSON.stringify({
           dishes: selectedDishes.value.map((dish) => dish.id),
           idTable,
+          ingredientsId: selectedIngredients.value,
         } as CreateOrder),
       });
 
@@ -93,9 +89,9 @@ export default function OrderSelection({ dishes, idTable }: Props) {
     }
   };
 
-  useSignalEffect(()=> {
-    console.log(selectedIngredients.value)
-  })
+  useSignalEffect(() => {
+    console.log(selectedIngredients.value);
+  });
 
   return (
     <>
