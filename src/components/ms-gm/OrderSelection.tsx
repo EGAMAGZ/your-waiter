@@ -3,7 +3,10 @@ import type { Dish } from "@/schema/dish";
 import type { CreateOrder } from "@/schema/order";
 import type { UpdateTableStatus } from "@/schema/table";
 import type { TableStatus } from "@/util/table";
-import { useSignal } from "@preact/signals";
+import { useSignal, useSignalEffect } from "@preact/signals";
+import ExtraIngredientsSelection from "./ExtraIngredientsSelection";
+import type { Ingredient } from "@/schema/ingredient";
+import { useId } from "preact/hooks";
 
 async function updateTableStatus(
   id: number,
@@ -26,6 +29,20 @@ async function updateTableStatus(
   }
 }
 
+const getExtraIngredients = async (dishId: number) => {
+  try {
+    const response = await fetch(`/api/ingredient/included/${dishId}`);
+    const { data, error } = await response.json() as ApiResponse<Dish[]>;
+    if (error) {
+      console.log(error);
+      return;
+    }
+    return data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 interface Props {
   dishes: Dish[];
   idTable: number;
@@ -35,9 +52,18 @@ interface DishWithCurrentQuantity extends Dish {
   currentQuantity: number;
 }
 
+type IngredientForDish = {
+  dishId: number;
+  ingredients: number[];
+};
+
 export default function OrderSelection({ dishes, idTable }: Props) {
   const selectedDishes = useSignal<Dish[]>([]);
   const dishOptionsRefs = new Map<number, () => void>();
+
+  const availableIngredients = useSignal<Ingredient[]>([]);
+
+  const selectedIngredients = useSignal<number[]>([]);
 
   const handleCancelOrder = async () => {
     await updateTableStatus(idTable, "free", () => {
@@ -67,69 +93,93 @@ export default function OrderSelection({ dishes, idTable }: Props) {
     }
   };
 
+  useSignalEffect(()=> {
+    console.log(selectedIngredients.value)
+  })
+
   return (
-    <div class="flex flex-col gap-8">
-      <div class="grid grid-cols-3 gap-8 grow">
-        <div class="col-span-2">
-          <span class="text-2xl font-semibold mb-4 block">Platillos</span>
-          <div class="grid grid-cols-4 gap-4">
-            {dishes.map((dish) => (
-              <DishOption
-                key={dish.id}
-                dish={dish}
-                onDecreaseSelection={(dish) => {
-                  selectedDishes.value = [...selectedDishes.value, dish];
-                }}
-                onIncreaseSelection={(increaseQty) => {
-                  dishOptionsRefs.set(dish.id, increaseQty);
-                }}
-              />
-            ))}
-          </div>
-        </div>
-        <div class="col-span-1">
-          <span class="block text-2xl font-semibold mb-4">
-            Pedido hasta el momento
-          </span>
-          {selectedDishes.value.length > 0 && (
-            <div class="flex flex-col gap-4 max-h-96 overflow-y-auto bg-gray-300 p-4 rounded">
-              {selectedDishes.value.map((dish, index) => (
-                <DishSelection
+    <>
+      <ExtraIngredientsSelection
+        ingredients={availableIngredients.value}
+        onSelected={(selectedIng) => {
+          const ids = selectedIng.map((i) => i.id);
+          selectedIngredients.value = [...selectedIngredients.value, ...ids];
+          availableIngredients.value = [];
+        }}
+        onCancelSelection={() => {
+          availableIngredients.value = [];
+        }}
+      />
+      <div class="flex flex-col gap-8">
+        <div class="grid grid-cols-3 gap-8 grow">
+          <div class="col-span-2">
+            <span class="text-2xl font-semibold mb-4 block">Platillos</span>
+            <div class="grid grid-cols-4 gap-4">
+              {dishes.map((dish) => (
+                <DishOption
                   key={dish.id}
                   dish={dish}
-                  index={index}
-                  onDeleteClick={(idx) => {
-                    const deletedDish = selectedDishes.value[idx];
-                    const increaseQuantity = dishOptionsRefs.get(deletedDish.id);
-                    if (increaseQuantity) {
-                      increaseQuantity();
+                  onDecreaseSelection={async (dish) => {
+                    selectedDishes.value = [...selectedDishes.value, dish];
+
+                    const ingredients = await getExtraIngredients(dish.id);
+                    if (ingredients) {
+                      availableIngredients.value = ingredients;
                     }
-                    selectedDishes.value = selectedDishes.value.filter(
-                      (_, i) => i !== idx,
-                    );
+                  }}
+                  onIncreaseSelection={(increaseQty) => {
+                    dishOptionsRefs.set(dish.id, increaseQty);
                   }}
                 />
               ))}
             </div>
-          )}
+          </div>
+          <div class="col-span-1">
+            <span class="block text-2xl font-semibold mb-4">
+              Pedido hasta el momento
+            </span>
+            {selectedDishes.value.length > 0 && (
+              <div class="flex flex-col gap-4 max-h-96 overflow-y-auto bg-gray-300 p-4 rounded">
+                {selectedDishes.value.map((dish, index) => (
+                  <DishSelection
+                    key={dish.id}
+                    dish={dish}
+                    index={index}
+                    onDeleteClick={(idx) => {
+                      const deletedDish = selectedDishes.value[idx];
+                      const increaseQuantity = dishOptionsRefs.get(
+                        deletedDish.id,
+                      );
+                      if (increaseQuantity) {
+                        increaseQuantity();
+                      }
+                      selectedDishes.value = selectedDishes.value.filter(
+                        (_, i) => i !== idx,
+                      );
+                    }}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+        <div class="flex gap-4">
+          <button
+            class="btn btn-ghost flex-1 btn-block"
+            onClick={handleCancelOrder}
+          >
+            Cancelar Pedido
+          </button>
+          <button
+            class="btn btn-primary flex-1 btn-block"
+            disabled={selectedDishes.value.length === 0}
+            onClick={handleCompleteOrder}
+          >
+            Pedido terminado
+          </button>
         </div>
       </div>
-      <div class="flex gap-4">
-        <button
-          class="btn btn-ghost flex-1 btn-block"
-          onClick={handleCancelOrder}
-        >
-          Cancelar Pedido
-        </button>
-        <button
-          class="btn btn-primary flex-1 btn-block"
-          disabled={selectedDishes.value.length === 0}
-          onClick={handleCompleteOrder}
-        >
-          Pedido terminado
-        </button>
-      </div>
-    </div>
+    </>
   );
 }
 
@@ -139,7 +189,10 @@ interface DishOptionProps {
   onIncreaseSelection: (increaseQty: () => void) => void;
 }
 
-function DishOption({ dish, onDecreaseSelection: onClick, onIncreaseSelection: ref }: DishOptionProps) {
+function DishOption(
+  { dish, onDecreaseSelection: onClick, onIncreaseSelection: ref }:
+    DishOptionProps,
+) {
   const quantity = useSignal(dish.quantity);
 
   const handleClick = () => {

@@ -8,7 +8,7 @@
     "build": "astro check && astro build",
     "preview": "deno run --allow-net --allow-read --allow-env ./dist/server/entry.mjs",
     "astro": "astro",
-    "update-types": "npx supabase gen types --lang=typescript --project-id \"$PROJECT_REF\" --schema public"
+    "update-types": "npx supabase gen types --lang=typescript --project-id \"slmqmqlrhfcttqvqskdk\" --schema public"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.3",
