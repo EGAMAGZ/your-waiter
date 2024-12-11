@@ -31,8 +31,13 @@ interface Props {
   idTable: number;
 }
 
+interface DishWithCurrentQuantity extends Dish {
+  currentQuantity: number;
+}
+
 export default function OrderSelection({ dishes, idTable }: Props) {
   const selectedDishes = useSignal<Dish[]>([]);
+  const dishOptionsRefs = new Map<number, () => void>();
 
   const handleCancelOrder = async () => {
     updateTableStatus(idTable, "free", () => {
@@ -73,6 +78,11 @@ export default function OrderSelection({ dishes, idTable }: Props) {
                 onClick={(dish) => {
                   selectedDishes.value = [...selectedDishes.value, dish];
                 }}
+                increaseRef={(increaseQty) => {
+                  if (increaseQty) {
+                    dishOptionsRefs.set(dish.id, increaseQty);
+                  }
+                }}
               />
             ))}
           </div>
@@ -88,6 +98,11 @@ export default function OrderSelection({ dishes, idTable }: Props) {
                   dish={dish}
                   index={index}
                   onDeleteClick={(idx) => {
+                    const deletedDish = selectedDishes.value[idx];
+                    const increaseQuantity = dishOptionsRefs.get(deletedDish.id);
+                    if (increaseQuantity) {
+                      increaseQuantity();
+                    }
                     selectedDishes.value = selectedDishes.value.filter(
                       (_, i) => i !== idx,
                     );
@@ -119,18 +134,25 @@ export default function OrderSelection({ dishes, idTable }: Props) {
 
 interface DishOptionProps {
   dish: Dish;
-  onClick: (dish: Dish) => void;
+  onClick: (dish: DishWithCurrentQuantity) => void;
+  increaseRef: (increaseQty: () => void) => void;
 }
 
-function DishOption({ dish, onClick }: DishOptionProps) {
+function DishOption({ dish, onClick, increaseRef: ref }: DishOptionProps) {
   const quantity = useSignal(dish.quantity);
 
   const handleClick = () => {
     if (quantity.value > 0) {
       quantity.value = quantity.value - 1;
     }
-    onClick(dish);
+    onClick({ ...dish, currentQuantity: quantity.value });
   };
+
+  const increaseQuantity = () => {
+    quantity.value = quantity.value + 1;
+  };
+
+  ref(increaseQuantity);
 
   return (
     <button
@@ -138,7 +160,7 @@ function DishOption({ dish, onClick }: DishOptionProps) {
       onClick={handleClick}
       disabled={quantity.value === 0}
     >
-      {dish.name}
+      {dish.name} ({quantity.value})
     </button>
   );
 }
