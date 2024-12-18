@@ -1,6 +1,5 @@
 import type { Ingredient } from "@/schema/ingredient";
 import { Signal, useSignal, useSignalEffect } from "@preact/signals";
-import { useFetch } from "@pretch/preact";
 import { useEffect, useId, useRef, useState } from "preact/hooks";
 
 interface Props {

@@ -1,4 +1,7 @@
 /// <reference path="../.astro/types.d.ts" />
+/// <reference types="astro/client" />
+/// <reference types="preact" />
+/// <reference types="@preact/signals-core" />
 
 interface ImportMetaEnv {
   readonly SUPABASE_URL: string;
