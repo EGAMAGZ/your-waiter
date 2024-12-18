@@ -1,9 +1,9 @@
 name: Deploy
 on:
   push:
-    branches: [master, development]
+    branches: master
   pull_request:
-    branches: [master, development]
+    branches: master
 
 jobs:
   deploy:
@@ -11,21 +11,25 @@ jobs:
     runs-on: ubuntu-latest
 
     permissions:
-      id-token: write
-      contents: read
+      id-token: write # Needed for auth with Deno Deploy
+      contents: read # Needed to clone the repository
 
     steps:
       - name: Clone repository
         uses: actions/checkout@v4
 
-      - name: Instalar las dependencias
-        run: npm install --force
+      - name: Install Deno
+        uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
 
-      - name: Construir Astro
-        run: npm run build
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
 
       - name: Install step
-        run: "npm install --force"
+        run: "npm install"
 
       - name: Build step
         run: "npm run build"
@@ -33,6 +37,8 @@ jobs:
       - name: Upload to Deno Deploy
         uses: denoland/deployctl@v1
         with:
-          project: your-waiter
-          entrypoint: server/entry.mjs
-          root: dist
+          project: "0marmf-your-waiter-32"
+          entrypoint: "server/entry.mjs"
+          root: "dist"
+          
+          
